@@ -19,7 +19,7 @@ def test_single_qubit():
 def test_entanglement():
     from shor.quantum import Circuit
     from shor.gates import CNOT, Hadamard
-    from shor.gates import Qubits
+    from shor.layers import Qubits
     from shor.operations import Measure
 
     circuit = Circuit()
