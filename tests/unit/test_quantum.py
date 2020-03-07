@@ -11,8 +11,3 @@ def test_circuit_add_base_layer():
     circuit.add(_BaseLayer())
 
     assert len(circuit.layers) == prev_num_layers + 1
-
-
-def test_qsession_init():
-    from shor.quantum import QSession
-    QSession()

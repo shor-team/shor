@@ -5,8 +5,7 @@ def test_single_qubit():
     circuit = Circuit(qbits=[0])
     circuit.add(Hadamard)
 
-    from shor.backends import QuantumSimulator
-    from shor.quantum import QSession
+    from shor.backends import QuantumSimulator, QSession
 
     sess = QSession(backend=QuantumSimulator)
     result = sess.run(circuit, num_shots=1024)
@@ -28,8 +27,7 @@ def test_entanglement():
     circuit.add(CNOT(0, 1))
     circuit.add(Measure(0, 1))
 
-    from shor.backends import QuantumSimulator
-    from shor.quantum import QSession
+    from shor.backends import QuantumSimulator, QSession
 
     sess = QSession(backend=QuantumSimulator)
     result = sess.run(circuit, num_shots=1024)
