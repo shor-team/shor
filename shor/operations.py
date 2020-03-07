@@ -7,6 +7,6 @@ class _Operation:
         pass
 
 
-class Measurement(_Operation):
+class Measure(_Operation):
     def __init__(self, axis='z'):
         super().__init__(axis=axis)

@@ -1,4 +1,7 @@
-class _Gate:
+from shor.layers import _BaseLayer
+
+
+class _Gate(_BaseLayer):
     """Abstract base quantum gate class
 
     # Properties
@@ -6,8 +9,7 @@ class _Gate:
     """
 
     def __init__(self, **kwargs):
-        self.inputs = kwargs.get('inputs', None)
-        self.output_shape =  kwargs.get('output_shape', [0])
+        super().__init__(**kwargs)
 
     def to_matrix(self, input_shape):
         pass

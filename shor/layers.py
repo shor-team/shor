@@ -1,5 +1,11 @@
+class _BaseLayer:
+    """Abstract base quantum layer class"""
 
-class _Layer:
+    def __init__(self, **kwargs):
+        pass
+
+
+class _Layer(_BaseLayer):
     """Abstract base quantum layer class
 
     # Properties
@@ -7,8 +13,7 @@ class _Layer:
     """
 
     def __init__(self, **kwargs):
-        self.inputs = kwargs.get('inputs', None)
-        self.output_shape = kwargs.get('output_shape', [0])
+        super().__init__(**kwargs)
 
     def to_gates(self):
         pass

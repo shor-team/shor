@@ -1,3 +1,3 @@
-def test_measurement_init():
-    from shor.operations import Measurement
-    Measurement()
+def test_measure_init():
+    from shor.operations import Measure
+    Measure()
