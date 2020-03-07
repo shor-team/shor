@@ -5,7 +5,7 @@ def test_single_qubit():
 
     circuit = Circuit()
     circuit.add(Qubits(1))
-    circuit.add(Hadamard())
+    circuit.add(Hadamard())  # Can also use H()
 
     from shor.backends import QuantumSimulator, QSession
 
