@@ -30,3 +30,8 @@ class Hadamard(_Gate):
 class PauliX(_Gate):
     def to_matrix(self):
         return np.array([[0, 1], [1, 0]])
+
+
+# Aliases
+H = Hadamard
+X = PauliX
