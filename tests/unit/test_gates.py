@@ -15,12 +15,14 @@ def test_cnot_init():
 
 
 def test_hadamard_init():
-    from shor.gates import Hadamard
+    from shor.gates import Hadamard, H
+    H()
     Hadamard()
 
 
 def test_paulix_init():
-    from shor.gates import PauliX
+    from shor.gates import PauliX, X
+    X()
     PauliX()
 
 
@@ -34,18 +36,20 @@ def test_cnot_matrix():
 
 
 def test_hadamard_matrix():
-    from shor.gates import Hadamard
-    g = Hadamard()
+    from shor.gates import Hadamard, H
+    gates = [Hadamard(), H()]
 
-    assert is_square(g.to_matrix())
-    assert is_unitary(g.to_matrix())
-    assert np.array_equal(g.to_matrix(), np.multiply(np.divide(1, np.sqrt(2)), np.array([[1, 1], [1, -1]])))
+    for g in gates:
+        assert is_square(g.to_matrix())
+        assert is_unitary(g.to_matrix())
+        assert np.array_equal(g.to_matrix(), np.multiply(np.divide(1, np.sqrt(2)), np.array([[1, 1], [1, -1]])))
 
 
 def test_paulix_matrix():
-    from shor.gates import PauliX
-    g = PauliX()
+    from shor.gates import PauliX, X
+    gates = [PauliX(), X()]
 
-    assert is_square(g.to_matrix())
-    assert is_unitary(g.to_matrix())
-    assert np.array_equal(g.to_matrix(), np.array([[0, 1], [1, 0]]))
+    for g in gates:
+        assert is_square(g.to_matrix())
+        assert is_unitary(g.to_matrix())
+        assert np.array_equal(g.to_matrix(), np.array([[0, 1], [1, 0]]))
