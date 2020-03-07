@@ -30,7 +30,7 @@ def test_cnot_matrix():
 
     assert is_square(g.to_matrix())
     assert is_unitary(g.to_matrix())
-    assert np.array_equal(g.to_matrix(), np.array([[1, 0, 0, 0],[0, 1, 0, 0], [0, 0, 0, 1], [1, 0, 0, 0]]))
+    assert np.array_equal(g.to_matrix(), np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0]]))
 
 
 def test_hadamard_matrix():
