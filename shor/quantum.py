@@ -9,3 +9,4 @@ class Circuit:
 
     def add(self, layer: _BaseLayer):
         self.layers.append(layer)
+        return self
