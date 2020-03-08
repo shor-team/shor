@@ -16,14 +16,22 @@ def test_cnot_init():
 
 def test_hadamard_init():
     from shor.gates import Hadamard, H
-    H()
-    Hadamard()
+    gate1 = H()
+    gate2 = Hadamard()
+
+    assert gate1.__class__ == gate2.__class__
+
+    # Try with parameter
+    H(0)
 
 
 def test_paulix_init():
     from shor.gates import PauliX, X
-    X()
-    PauliX()
+    gate1 = X()
+    gate2 = PauliX()
+    assert gate1.__class__ == gate2.__class__
+    # Try with parameter
+    X(0)
 
 
 def test_cnot_matrix():

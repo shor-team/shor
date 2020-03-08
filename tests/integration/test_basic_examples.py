@@ -2,10 +2,12 @@ def test_single_qubit():
     from shor.quantum import Circuit
     from shor.gates import Hadamard
     from shor.layers import Qubits
+    from shor.operations import Measure
 
     circuit = Circuit()
     circuit.add(Qubits(1))
     circuit.add(Hadamard())  # Can also use H()
+    circuit.add(Measure())
 
     from shor.backends import QuantumSimulator, QSession
 
