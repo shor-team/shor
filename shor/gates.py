@@ -21,6 +21,9 @@ class _Gate(_BaseLayer):
         assert all(map(lambda q: type(q) == int, self.qubits))
         assert len(self.qubits) == self.dimension
 
+    def to_gates(self):
+        return [self]
+
 
 class CNOT(_Gate):
     def __init__(self, *qubits, **kwargs):
@@ -62,5 +65,6 @@ class PauliX(_Gate):
 
 
 # Aliases
-H = Hadamard
-X = PauliX
+H = h = Hadamard
+X = x = PauliX
+CX = cx = CNOT

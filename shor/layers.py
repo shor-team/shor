@@ -4,6 +4,8 @@ class _BaseLayer:
     def __init__(self, **kwargs):
         pass
 
+    def to_gates(self):
+        pass
 
 class _Layer(_BaseLayer):
     """Abstract base quantum layer class
@@ -19,6 +21,16 @@ class _Layer(_BaseLayer):
         pass
 
 
-class Qubits(_Layer):
-    def __init__(self, num):
-        super().__init__(output_shape=(num,))
+class Qubits(_BaseLayer):
+    def __init__(self, num, state=0, **kwargs):
+        self.num = num
+        self.state = state
+
+        super().__init__(**kwargs)
+
+    def to_gates(self):
+        return []
+
+
+# Aliasing class
+Qbits = Qubits
