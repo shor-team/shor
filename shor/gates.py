@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 
 from shor.layers import _BaseLayer
@@ -101,6 +103,22 @@ class PauliZ(_Gate):
     @staticmethod
     def to_matrix() -> np.ndarray:
         return np.array([[1, 0], [0, -1]])
+
+
+class Rx(_Gate):
+    def __init__(self, *qubits, angle=math.pi/2, **kwargs):
+        kwargs['dimension'] = 1
+        self.angle=angle
+        if not qubits:
+            qubits = [0]
+
+        super().__init__(*qubits, **kwargs)
+
+    def to_matrix(self) -> np.ndarray:
+        return np.array([
+        [math.cos(self.angle / 2), -math.sin(self.angle / 2) * 1j],
+        [-math.sin(self.angle / 2) * 1j, math.cos(self.angle / 2)]
+    ])
 
 
 class SWAP(_Gate):
