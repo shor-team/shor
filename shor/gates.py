@@ -1,5 +1,3 @@
-from typing import List
-
 import numpy as np
 
 from shor.layers import _BaseLayer
@@ -38,6 +36,22 @@ class CNOT(_Gate):
         return np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0]])
 
 
+class CSWAP(_Gate):
+    def __init__(self, *qubits, **kwargs):
+        kwargs['dimension'] = 3
+        if not qubits:
+            qubits = [0, 1, 2]
+
+        super().__init__(*qubits, **kwargs)
+
+    @staticmethod
+    def to_matrix() -> np.ndarray:
+        cswap_matrix = np.eye(8)
+        cswap_matrix[:, [5, 6]] = cswap_matrix[:, [6, 5]]
+        return cswap_matrix
+
+
+
 class Hadamard(_Gate):
     def __init__(self, *qubits, **kwargs):
         kwargs['dimension'] = 1
@@ -68,3 +82,4 @@ class PauliX(_Gate):
 H = h = Hadamard
 X = x = PauliX
 CX = cx = CNOT
+Fredkin = cswap = CSWAP

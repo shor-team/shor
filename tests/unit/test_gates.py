@@ -48,14 +48,17 @@ def test_cnot_matrix():
 
 def test_cswap_matrix():
     from shor.gates import CSWAP, Fredkin
-    g = CSWAP()
+    gate1 = CSWAP()
+    gate2 = Fredkin()
 
-    assert is_square(g.to_matrix())
-    assert is_unitary(g.to_matrix())
+    assert gate1.__class__ == gate2.__class__
+
+    assert is_square(gate1.to_matrix())
+    assert is_unitary(gate1.to_matrix())
 
     expected = np.eye(8)
     expected[:, [5, 6]] = expected[:, [6, 5]]
-    assert np.array_equal(g.to_matrix(), expected)
+    assert np.array_equal(gate1.to_matrix(), expected)
 
     # Try with parameter
     CSWAP(2, 0, 1)
