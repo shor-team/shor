@@ -1,4 +1,4 @@
-class _BaseLayer:
+class _BaseLayer(object):
     """Abstract base quantum layer class"""
 
     def __init__(self, **kwargs):

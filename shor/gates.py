@@ -51,7 +51,6 @@ class CSWAP(_Gate):
         return cswap_matrix
 
 
-
 class Hadamard(_Gate):
     def __init__(self, *qubits, **kwargs):
         kwargs['dimension'] = 1

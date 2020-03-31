@@ -13,7 +13,7 @@ class _GateTuple(NamedTuple):
     matrix: np.ndarray
 
 
-class _QuantumBackend:
+class _QuantumBackend(object):
     def run(self, initial_state, gates, measure_bits):
         pass
 
