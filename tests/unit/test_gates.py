@@ -26,15 +26,15 @@ def test_hadamard_init():
 
 
 def test_swap_init():
-    from shor.gates import Swap
-    g = Swap()
+    from shor.gates import SWAP
+    g = SWAP()
 
     assert is_square(g.to_matrix())
     assert is_unitary(g.to_matrix())
     assert np.array_equal(g.to_matrix(), np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]))
 
-    # Try with parameter
-    Swap(0)
+    # Try with parameters
+    SWAP(1, 0)
 
 
 def test_paulix_init():
