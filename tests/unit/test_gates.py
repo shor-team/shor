@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 
 
@@ -25,18 +27,6 @@ def test_hadamard_init():
     H(0)
 
 
-def test_swap_init():
-    from shor.gates import SWAP
-    g = SWAP()
-
-    assert is_square(g.to_matrix())
-    assert is_unitary(g.to_matrix())
-    assert np.array_equal(g.to_matrix(), np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]))
-
-    # Try with parameters
-    SWAP(1, 0)
-
-
 def test_paulix_init():
     from shor.gates import PauliX, X
     gate1 = X()
@@ -62,6 +52,32 @@ def test_pauliz_init():
     assert gate1.__class__ == gate2.__class__
     # Try with parameter
     Z(0)
+
+
+def test_swap_init():
+    from shor.gates import SWAP
+    g = SWAP()
+
+    assert is_square(g.to_matrix())
+    assert is_unitary(g.to_matrix())
+    assert np.array_equal(g.to_matrix(), np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]))
+
+    # Try with parameters
+    SWAP(1, 0)
+
+
+def test_rx():
+    from shor.gates import Rx
+    angle = math.pi / 8
+    g = Rx(0, angle=math.pi / 8)
+
+    assert is_square(g.to_matrix())
+    assert is_unitary(g.to_matrix())
+
+    assert np.array_equal(g.to_matrix(), np.array([
+        [math.cos(angle / 2), -math.sin(angle / 2) * 1j],
+        [-math.sin(angle / 2) * 1j, math.cos(angle / 2)]
+    ]))
 
 
 def test_cnot_matrix():
