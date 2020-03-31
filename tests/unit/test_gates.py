@@ -42,6 +42,24 @@ def test_cnot_matrix():
     assert is_unitary(g.to_matrix())
     assert np.array_equal(g.to_matrix(), np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0]]))
 
+    # Try with parameter
+    CNOT(1, 0)
+
+
+def test_cswap_matrix():
+    from shor.gates import CSWAP, Fredkin
+    g = CSWAP()
+
+    assert is_square(g.to_matrix())
+    assert is_unitary(g.to_matrix())
+
+    expected = np.eye(8)
+    expected[:, [5, 6]] = expected[:, [6, 5]]
+    assert np.array_equal(g.to_matrix(), expected)
+
+    # Try with parameter
+    CSWAP(2, 0, 1)
+
 
 def test_hadamard_matrix():
     from shor.gates import Hadamard, H
