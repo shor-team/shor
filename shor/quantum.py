@@ -1,15 +1,23 @@
-from typing import List
+from __future__ import annotations
+from typing import List, Union
+
 
 from shor.layers import _BaseLayer, Qubits
 from shor.operations import Measure
 
 
-class Circuit:
+class Circuit(object):
     def __init__(self):
         self.layers: List[_BaseLayer] = []
 
-    def add(self, layer: _BaseLayer):
-        self.layers.append(layer)
+    def add(self, layer_or_circuit: Union[_BaseLayer, Circuit]):
+
+        if isinstance(layer_or_circuit, _BaseLayer):
+            self.layers.append(layer_or_circuit)
+        elif isinstance(layer_or_circuit, Circuit):
+            self.layers.extend(layer_or_circuit.layers)
+        else:
+            raise TypeError("Circuit class cannot add the type: {}".format(type(layer_or_circuit)))
 
         return self
 
