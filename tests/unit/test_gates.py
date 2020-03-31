@@ -54,13 +54,14 @@ def test_pauliz_init():
     Z(0)
 
 
+def test_qft_init():
+    from shor.gates import QFT
+    g = QFT(0, 1)
+
+
 def test_swap_init():
     from shor.gates import SWAP
     g = SWAP()
-
-    assert is_square(g.to_matrix())
-    assert is_unitary(g.to_matrix())
-    assert np.array_equal(g.to_matrix(), np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]))
 
     # Try with parameters
     SWAP(1, 0)
@@ -128,3 +129,25 @@ def test_paulix_matrix():
         assert is_square(g.to_matrix())
         assert is_unitary(g.to_matrix())
         assert np.array_equal(g.to_matrix(), np.array([[0, 1], [1, 0]]))
+
+
+def test_qft_matrix():
+    from shor.gates import QFT
+
+    g = QFT(0, 1)
+
+    assert is_square(g.to_matrix())
+    assert is_unitary(g.to_matrix())
+    assert np.array_equal(g.to_matrix(), np.multiply(
+        1/2,
+       np.array([[1, 1, 1, 1], [1, 1j, -1, -1j], [1, -1, 1, -1], [1, -1j, -1, 1j]])
+    ))
+
+
+def test_swap_matrix():
+    from shor.gates import SWAP
+    g = SWAP(0, 1)
+
+    assert is_square(g.to_matrix())
+    assert is_unitary(g.to_matrix())
+    assert np.array_equal(g.to_matrix(), np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]))
