@@ -24,6 +24,10 @@ class _Gate(_BaseLayer):
     def to_gates(self):
         return [self]
 
+    @property
+    def num_states(self):
+        return np.power(2, self.dimension)
+
 
 class CNOT(_Gate):
     def __init__(self, *qubits, **kwargs):
@@ -103,6 +107,36 @@ class PauliZ(_Gate):
     @staticmethod
     def to_matrix() -> np.ndarray:
         return np.array([[1, 0], [0, -1]])
+
+
+class QFT(_BaseLayer, _Gate):
+    def __init__(self, *qubits, **kwargs):
+        if not qubits:
+            qubits = [0, 1]
+
+        super().__init__(*qubits, dimension=2, **kwargs)
+
+    def to_gates(self):
+        # TODO: translate this gate to base gates / CNOTs
+        pass
+
+    def get_nth_unity_root(self, k):
+        return np.exp((2j * np.pi * k) / self.num_states)
+
+    def to_matrix(self) -> np.ndarray:
+        m = np.array(np.ones((self.num_states, self.num_states)), dtype='complex')
+
+        for i in range(1, self.num_states):
+            for j in range(i, self.num_states):
+                w = self.get_nth_unity_root(i * j)
+                m[i, j] = w
+                m[j, i] = w
+
+        return np.around(
+            np.multiply(
+                1 / np.sqrt(self.num_states),
+                m
+            ), decimals=15)
 
 
 class Rx(_Gate):

@@ -7,6 +7,7 @@ class _BaseLayer(object):
     def to_gates(self):
         pass
 
+
 class _Layer(_BaseLayer):
     """Abstract base quantum layer class
 
