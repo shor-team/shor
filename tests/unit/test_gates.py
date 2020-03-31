@@ -25,6 +25,18 @@ def test_hadamard_init():
     H(0)
 
 
+def test_swap_init():
+    from shor.gates import Swap
+    g = Swap()
+
+    assert is_square(g.to_matrix())
+    assert is_unitary(g.to_matrix())
+    assert np.array_equal(g.to_matrix(), np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]))
+
+    # Try with parameter
+    Swap(0)
+
+
 def test_paulix_init():
     from shor.gates import PauliX, X
     gate1 = X()
@@ -32,6 +44,24 @@ def test_paulix_init():
     assert gate1.__class__ == gate2.__class__
     # Try with parameter
     X(0)
+
+
+def test_pauliy_init():
+    from shor.gates import PauliY, Y
+    gate1 = Y()
+    gate2 = PauliY()
+    assert gate1.__class__ == gate2.__class__
+    # Try with parameter
+    Y(0)
+
+
+def test_pauliz_init():
+    from shor.gates import PauliZ, Z
+    gate1 = Z()
+    gate2 = PauliZ()
+    assert gate1.__class__ == gate2.__class__
+    # Try with parameter
+    Z(0)
 
 
 def test_cnot_matrix():
