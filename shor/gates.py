@@ -109,7 +109,7 @@ class PauliZ(_Gate):
         return np.array([[1, 0], [0, -1]])
 
 
-class QFT(_BaseLayer, _Gate):
+class QFT(_Gate):
     def __init__(self, *qubits, **kwargs):
         if not qubits:
             qubits = [0, 1]
