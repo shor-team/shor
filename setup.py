@@ -7,7 +7,7 @@ requirements = []
 
 setup(
     name="shor",
-    version="0.0.1",
+    version="0.0.2a1",
     author="shor.dev",
     author_email="shordotdev@gmail.com",
     description="Quantum Computing for Humans",
