@@ -23,8 +23,8 @@ class Circuit(object):
 
     def initial_state(self):
         initial_qubits = []
-        for ql in filter(lambda l: type(l) == Qubits, self.layers):
-            initial_qubits.extend([ql.state] * ql.num)
+        for qbit_layer in filter(lambda l: type(l) == Qubits, self.layers):
+            initial_qubits.extend([qbit_layer.state] * qbit_layer.num)
 
         return initial_qubits
 

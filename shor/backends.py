@@ -148,6 +148,8 @@ def get_entangled_initial_state(initial_state, new_qubit_order):
         entangled_states: Deque[np.ndarray] = deque()
         while len(states_to_entangle) > 1:
             entangled_states.append(np.kron(states_to_entangle.popleft(), states_to_entangle.popleft()))
+        if len(states_to_entangle) == 1:
+            entangled_states.append(states_to_entangle.popleft())
         states_to_entangle = entangled_states
 
     return states_to_entangle.pop()

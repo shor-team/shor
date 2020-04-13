@@ -65,9 +65,8 @@ class Hadamard(_Gate):
 
         super().__init__(*qubits, **kwargs)
 
-    @staticmethod
-    def to_matrix() -> np.ndarray:
-        return np.multiply(np.divide(1, np.sqrt(2)), np.array([[1, 1], [1, -1]]))
+    def to_matrix(self) -> np.ndarray:
+        return np.multiply(np.divide(1, np.sqrt(self.num_states)), np.array([[1, 1], [1, -1]]))
 
 
 class PauliX(_Gate):
@@ -114,11 +113,11 @@ class QFT(_Gate):
         if not qubits:
             qubits = [0, 1]
 
-        super().__init__(*qubits, dimension=2, **kwargs)
+        super().__init__(*qubits, dimension=len(qubits), **kwargs)
 
-    def to_gates(self):
-        # TODO: translate this gate to base gates / CNOTs
-        pass
+    # def to_gates(self):
+    #     # TODO: translate this gate to base gates / CNOTs
+    #     pass
 
     def get_nth_unity_root(self, k):
         return np.exp((2j * np.pi * k) / self.num_states)
