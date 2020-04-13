@@ -1,4 +1,3 @@
-from __future__ import annotations
 from typing import List, Union
 
 
@@ -10,7 +9,7 @@ class Circuit(object):
     def __init__(self):
         self.layers: List[_BaseLayer] = []
 
-    def add(self, layer_or_circuit: Union[_BaseLayer, Circuit]):
+    def add(self, layer_or_circuit: Union[_BaseLayer, 'Circuit']):
 
         if isinstance(layer_or_circuit, _BaseLayer):
             self.layers.append(layer_or_circuit)
