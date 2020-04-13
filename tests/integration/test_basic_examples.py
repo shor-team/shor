@@ -5,7 +5,6 @@ from shor.quantum import Circuit
 from shor.backends import QuantumSimulator, QSession
 
 
-
 def test_single_qubit():
     circuit = Circuit()
     circuit.add(Qubits(1))
