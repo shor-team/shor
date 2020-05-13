@@ -17,8 +17,8 @@ def test_single_qubit():
     result = sess.run(circuit, num_shots=1024)
 
     # Accounting for random noise, results won't be exact
-    assert result.counts.get(bin(0)) > 450
-    assert result.counts.get(bin(1)) > 450
+    assert result[bin(0)] > 450
+    assert result[bin(1)] > 450
 
 
 def test_entanglement():
@@ -31,16 +31,10 @@ def test_entanglement():
     sess = QSession(backend=QuantumSimulator())
     result = sess.run(circuit, num_shots=1024)
 
-    # Accounting for random noise, results won't be exact
-    # For result index:
-    #     - int('10',2)
-    #     - 0b10
-    #     - 2
-    # are all equivalant ways to get the index for '|10>'
-    assert result.counts.get(bin(1)) == 0
-    assert result.counts.get(0b10) == 0
-    assert result.counts.get('00') > 450
-    assert result.counts.get(3) > 450
+    assert result['01'] == 0
+    assert result['10'] == 0
+    assert result['00'] > 450
+    assert result['11'] > 450
 
 
 def test_unitary_symmetry_does_nothing():

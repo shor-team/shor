@@ -98,7 +98,7 @@ class QuantumSimulator(_QuantumBackend):
         return np.random.choice(state_vector.shape[0], p=probabilities)
 
 
-class QSession:
+class QSession(object):
     def __init__(self, **kwargs):
         self.backend = kwargs.get('backend', QuantumSimulator())
 
@@ -115,12 +115,13 @@ class QSession:
             state = self.backend.run(initial_state, gates, measure_bits)
             counts[state] = counts.get(state, 0) + 1
 
-        return QResult(counts)
+        return QResult(counts, sig_bits=len(circuit.initial_state()))
 
 
-class QCounts:
-    def __init__(self, counts: Dict[int, int]):
+class QResult(object):
+    def __init__(self, counts: Dict[int, int], sig_bits: int):
         self.counts: Dict[int, int] = counts
+        self.sig_bits: int = sig_bits
 
     def get(self, key, default=0):
         if isinstance(key, str):
@@ -130,10 +131,11 @@ class QCounts:
 
         return self.counts.get(idx, default)
 
+    def __getitem__(self, item):
+        return self.get(item)
 
-class QResult:
-    def __init__(self, counts: Dict[int, int]):
-        self.counts: QCounts = QCounts(counts)
+    def __repr__(self):
+        return repr({int_to_bit_string(k, self.sig_bits): v for k, v in self.counts.items()})
 
 
 def get_entangled_initial_state(initial_state, new_qubit_order):
@@ -177,3 +179,7 @@ def int_to_bits(num: int, sig_bits: int) -> str:
 
 def int_from_bit_string(bits: str) -> int:
     return int(bits, 2) if bits.startswith('0b') else int('0b' + bits, 2)
+
+
+def int_to_bit_string(i: int, sig_bits: int) -> str:
+    return '{0:b}'.format(i).zfill(sig_bits)
