@@ -60,3 +60,39 @@ def test_unitary_symmetry_does_nothing():
 
     assert result_1.counts.get(0) == 1024
     assert result_2.counts.get(3) == 1024
+
+
+def test_multi_entangle():
+    circuit = Circuit()
+    circuit.add(Qubits(4))
+    circuit.add(Hadamard(0))
+    circuit.add(CNOT(0, 1))
+    circuit.add(CNOT(0, 2))
+    circuit.add(CNOT(0, 3))
+    circuit.add(Measure(0, 1, 2, 3))
+
+    sess = QSession(backend=QuantumSimulator())
+    result = sess.run(circuit, num_shots=1024)
+
+    assert result['0001'] == 0
+    assert result['1000'] == 0
+    assert result['0000'] > 450
+    assert result['1111'] > 450
+
+
+def test_multi_hadamard():
+    circuit = Circuit()
+    circuit.add(Qubits(4))
+    circuit.add(Hadamard(0))
+    circuit.add(Hadamard(1))
+    circuit.add(Hadamard(2))
+    circuit.add(Hadamard(3))
+    circuit.add(Measure(0, 1, 2, 3))
+
+    sess = QSession(backend=QuantumSimulator())
+    result = sess.run(circuit, num_shots=1024)
+
+    # All 16 states should be relatively equal probability
+    assert len(result.counts) == 16
+    assert max(result.counts.values()) - min(result.counts.values()) < 50
+
