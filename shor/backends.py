@@ -37,10 +37,7 @@ class QuantumSimulator(_QuantumBackend):
                 if can_combine_no_tensor:
                     combined.append(_GateTuple(
                         gate1.qubits,
-                        np.dot(
-                            gate1.matrix,
-                            change_qubit_order(gate2.matrix, gate2.qubits, gate1.qubits)
-                        )
+                        change_qubit_order(gate2.matrix, gate2.qubits, gate1.qubits).dot(gate1.matrix)
                     ))
                 elif can_combine_with_tensor:
                     combined.append(_GateTuple(
@@ -78,10 +75,7 @@ class QuantumSimulator(_QuantumBackend):
 
                     combined.append(_GateTuple(
                         all_qubits,
-                        np.dot(
-                            new_gate1,
-                            new_gate2
-                        )
+                        new_gate2.dot(new_gate1)
                     ))
 
             to_combine = combined
@@ -93,7 +87,7 @@ class QuantumSimulator(_QuantumBackend):
         new_qubit_order = combined.qubits
         state_vector = get_entangled_initial_state(initial_state, new_qubit_order)
 
-        probabilities = np.square(np.dot(state_vector, combined.matrix))
+        probabilities = np.square(combined.matrix.dot(state_vector))
 
         return np.random.choice(state_vector.shape[0], p=probabilities)
 
@@ -168,8 +162,8 @@ def change_qubit_order(matrix: np.ndarray, old_order, new_order) -> np.ndarray:
 
 def rearrange_bits(num: int, new_bit_order: List[int]):
     sig_bits = len(new_bit_order)
-    bit_string = int_to_bits(num, sig_bits)[2:]
-    result = int('0b' + ''.join(bit_string[-b] for b in new_bit_order), 2)
+    bit_string = int_to_bit_string(num, sig_bits)
+    result = int_from_bit_string(''.join(bit_string[-b] for b in new_bit_order))
     return result
 
 
