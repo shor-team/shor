@@ -7,7 +7,7 @@ requirements = ['numpy>=1.9.1']
 
 setup(
     name="shor",
-    version="0.0.2",
+    version="0.0.3",
     author="shor.dev",
     author_email="shordotdev@gmail.com",
     description="Quantum Computing for Humans",
