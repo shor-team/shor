@@ -89,7 +89,7 @@ class QuantumSimulator(_QuantumBackend):
 
         probabilities = np.square(combined.matrix.dot(state_vector))
 
-        return np.random.choice(state_vector.shape[0], p=probabilities)
+        return np.random.choice(state_vector.shape[0], p=probabilities) #broken here
 
 
 class QSession(object):

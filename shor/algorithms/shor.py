@@ -27,7 +27,7 @@ def factor(N: int) -> Tuple[int, int]:
         a_pow_r_o_2 = a ^ (r / 2)
 
         # if r is odd or
-        if r & 1 == 1 or a_pow_r_o_2 == (-1 % N):
+        if r & 1 == 1 or (a_pow_r_o_2 + 1) % N == 0:
             continue
 
         factor = max(gcd(a_pow_r_o_2 + 1, N), gcd(a_pow_r_o_2 - 1, N))
@@ -118,8 +118,7 @@ def gcd(a: int, b: int) -> int:
     while remainder != 0:
         divisor = remainder
         remainder = to_divide
-        while remainder >= divisor:
-            remainder -= divisor
+        remainder = to_divide % divisor
         to_divide = divisor
 
     return divisor
