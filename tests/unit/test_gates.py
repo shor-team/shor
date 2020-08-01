@@ -145,3 +145,36 @@ def test_swap_matrix():
     assert is_square(g.to_matrix())
     assert is_unitary(g.to_matrix())
     assert np.array_equal(g.to_matrix(), np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]))
+
+
+def test_ccnot_matrix():
+    from shor.gates import CCNOT
+    g = CCNOT(0,1,2)
+
+    assert is_square(g.to_matrix())
+    assert is_unitary(g.to_matrix())
+    assert np.array_equal(g.to_matrix(), np.array([[1, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0],
+                                                   [0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0, 0],
+                                                   [0, 0, 0, 0, 1, 0, 0, 0], [0, 0, 0, 0, 0, 1, 0, 0],
+                                                   [0, 0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 0, 1, 0]
+                                                   ]))
+    
+
+def test_crz_matrix():
+     from shor.gates import CRZ
+     angle = np.pi/3
+     g = CRZ(0, 1, angle=np.pi/3)
+          
+     assert is_square(g.to_matrix())
+     assert is_unitary(g.to_matrix())
+     assert np.array_equal(g.to_matrix(), np.array([[1, 0, 0, 0], [0, np.exp(-1j*angle/2), 0, 0],
+                                                    [0, 0, 1, 0], [0, 0, 0, np.exp(1j*angle/2)]]))
+
+
+def test_ch_matrix():
+    from shor.gates import CH
+    g = CH(0, 1)
+
+    assert is_square(g.to_matrix())
+    assert is_unitary(g.to_matrix())
+    assert np.array_equal(g.to_matrix(), np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1/np.sqrt(2), 1/np.sqrt(2)], [0, 0, 1/np.sqrt(2), -1/np.sqrt(2)]]))

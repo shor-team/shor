@@ -87,8 +87,9 @@ class QuantumSimulator(_QuantumBackend):
         new_qubit_order = combined.qubits
         state_vector = get_entangled_initial_state(initial_state, new_qubit_order)
 
-        probabilities = np.square(combined.matrix.dot(state_vector))
-
+        probabilities = np.square(combined.matrix.dot(state_vector)).real
+        probabilities = probabilities/np.sum(probabilities) # changed to avoid  "No loop matching the specified signature and casting was found for ufunc true_divide"
+        assert np.sum(probabilities) == 1
         return np.random.choice(state_vector.shape[0], p=probabilities)
 
 

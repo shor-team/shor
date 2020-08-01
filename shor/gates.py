@@ -167,6 +167,50 @@ class SWAP(_Gate):
         return np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]])
 
 
+class CCNOT(_Gate):
+    def __init__(self, *qubits, **kwargs):
+        kwargs['dimension'] = 3
+        if not qubits:
+            qubits = [0, 1, 2]
+
+        super().__init__(*qubits, **kwargs)
+
+    @staticmethod
+    def to_matrix() -> np.ndarray:
+        return np.array([[1, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0], 
+                         [0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0, 0],
+                         [0, 0, 0, 0, 1, 0, 0, 0], [0, 0, 0, 0, 0, 1, 0, 0],
+                         [0, 0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 0, 1, 0]
+                         ])
+
+
+class CRZ(_Gate):
+    def __init__(self, *qubits, angle=0, **kwargs):
+        kwargs['dimension'] = 2
+        self.angle = angle
+        if not qubits:
+            qubits = [0, 1]
+
+        super().__init__(*qubits, **kwargs)
+
+    def to_matrix(self) -> np.ndarray:
+        return np.array([[1, 0, 0, 0], [0, np.exp(-1j*self.angle/2), 0, 0],
+                          [0, 0, 1, 0], [0, 0, 0, np.exp(1j*self.angle/2)]])
+
+
+class CH(_Gate):
+    def __init__(self, *qubits, **kwargs):
+        kwargs['dimension'] = 2
+        if not qubits:
+            qubits = [0, 1]
+
+        super().__init__(*qubits, **kwargs)
+
+    @staticmethod
+    def to_matrix() -> np.ndarray:
+        return np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1/np.sqrt(2), 1/np.sqrt(2)], [0, 0, 1/np.sqrt(2), -1/np.sqrt(2)]])
+
+
 # Aliases
 H = h = Hadamard
 X = x = PauliX
