@@ -32,7 +32,7 @@ class QuantumSimulator(_QuantumBackend):
                 gate2 = to_combine.popleft()
 
                 can_combine_no_tensor = set(gate1.qubits) == set(gate2.qubits)
-                can_combine_with_tensor = not any(q in gate2.qubits for q in gate1.qubits)
+                can_combine_with_tensor = not has_common_qbits(gate1, gate2)
 
                 if can_combine_no_tensor:
                     combined.append(_GateTuple(
@@ -78,19 +78,27 @@ class QuantumSimulator(_QuantumBackend):
                         new_gate2.dot(new_gate1)
                     ))
 
-            to_combine = combined
+            to_combine += combined
+            combined = deque()
 
         return to_combine.pop()
 
     def run(self, initial_state: np.ndarray, gates: List[_Gate], measure_bits: List[int]):
         combined = self.combine_gates(tuple(gates))
-        new_qubit_order = combined.qubits
-        state_vector = get_entangled_initial_state(initial_state, new_qubit_order)
 
-        probabilities = np.square(combined.matrix.dot(state_vector)).real
-        probabilities = probabilities/np.sum(probabilities) # changed to avoid  "No loop matching the specified signature and casting was found for ufunc true_divide"
-        assert np.sum(probabilities) == 1
-        return np.random.choice(state_vector.shape[0], p=probabilities)
+        new_qubit_order = combined.qubits
+
+        reordered_state_vector = get_entangled_initial_state(initial_state, new_qubit_order)
+
+        reordered_probabilities = np.square(combined.matrix.dot(reordered_state_vector)).real
+        reordered_probabilities = reordered_probabilities/np.sum(reordered_probabilities)  # normalized
+
+        # TODO: Wrong qubit order!!! This randomly selects from the "one hot vector" but this is after we have
+        # Re-ordered the qubits... Must undo this some how, reorder the bits, and convert back to a number
+        # 001 = 1, but qubit order is [2,0,1] need new qubit order to be [0,1,2] matching initial_state
+        # So that would effectively swap 0 and 2 -> 001 -> 100 = 4 is the expected probability outcome
+        # This function should return 4 in that case.
+        return np.random.choice(reordered_state_vector.shape[0], p=reordered_probabilities)
 
 
 class QSession(object):
@@ -178,3 +186,7 @@ def int_from_bit_string(bits: str) -> int:
 
 def int_to_bit_string(i: int, sig_bits: int) -> str:
     return '{0:b}'.format(i).zfill(sig_bits)
+
+
+def has_common_qbits(gate1, gate2):
+    return len(set(gate1.qubits).intersection(set(gate2.qubits))) > 0
