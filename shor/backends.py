@@ -1,4 +1,4 @@
-from collections import deque
+from collections import deque, Counter
 from functools import lru_cache
 from typing import List, Deque, NamedTuple, Tuple, Dict
 
@@ -83,22 +83,28 @@ class QuantumSimulator(_QuantumBackend):
 
         return to_combine.pop()
 
-    def run(self, initial_state: np.ndarray, gates: List[_Gate], measure_bits: List[int]):
+    def run(self, initial_state: np.ndarray, gates: List[_Gate], measure_bits: List[int], num_shots):
         combined = self.combine_gates(tuple(gates))
-
         new_qubit_order = combined.qubits
+        # reordered_state_vector = get_entangled_initial_state(initial_state, new_qubit_order)
+        # reordered_probabilities = np.square(combined.matrix.dot(reordered_state_vector)).real
+        # reordered_probabilities = reordered_probabilities/np.sum(reordered_probabilities)  # normalized
+        # # TODO: Wrong qubit order!!! This randomly selects from the "one hot vector" but this is after we have
+        # # Re-ordered the qubits... Must undo this some how, reorder the bits, and convert back to a number
+        # # 001 = 1, but qubit order is [2,0,1] need new qubit order to be [0,1,2] matching initial_state
+        # # So that would effectively swap 0 and 2 -> 001 -> 100 = 4 is the expected probability outcome
+        # # This function should return 4 in that case.
+        # assert np.sum(reordered_probabilities) == 1
+        # return np.random.choice(reordered_state_vector.shape[0], p=reordered_probabilities)
+        state_vector = get_entangled_initial_state(initial_state, new_qubit_order)
 
-        reordered_state_vector = get_entangled_initial_state(initial_state, new_qubit_order)
+        # probabilities = np.square(combined.matrix.dot(state_vector))
 
-        reordered_probabilities = np.square(combined.matrix.dot(reordered_state_vector)).real
-        reordered_probabilities = reordered_probabilities/np.sum(reordered_probabilities)  # normalized
+        probabilities = np.square(np.absolute(combined.matrix.dot(state_vector))).real
+        probabilities /= np.sum(probabilities)
 
-        # TODO: Wrong qubit order!!! This randomly selects from the "one hot vector" but this is after we have
-        # Re-ordered the qubits... Must undo this some how, reorder the bits, and convert back to a number
-        # 001 = 1, but qubit order is [2,0,1] need new qubit order to be [0,1,2] matching initial_state
-        # So that would effectively swap 0 and 2 -> 001 -> 100 = 4 is the expected probability outcome
-        # This function should return 4 in that case.
-        return np.random.choice(reordered_state_vector.shape[0], p=reordered_probabilities)
+        measured = Counter([np.random.choice(state_vector.shape[0], p=probabilities) for m in range(num_shots)])
+        return measured
 
 
 class QSession(object):
@@ -112,11 +118,7 @@ class QSession(object):
         gates = circuit.to_gates()
         measure_bits = circuit.measure_bits()
 
-        counts = {}
-
-        for i in range(num_shots):
-            state = self.backend.run(initial_state, gates, measure_bits)
-            counts[state] = counts.get(state, 0) + 1
+        counts = self.backend.run(initial_state, gates, measure_bits, num_shots)
 
         return QResult(counts, sig_bits=len(circuit.initial_state()))
 
@@ -144,7 +146,7 @@ class QResult(object):
 def get_entangled_initial_state(initial_state, new_qubit_order):
     states_to_entangle: Deque[np.ndarray] = deque()
 
-    states = list(map(lambda s: np.asarray([1 if s == 0 else 0, 1 if s == 1 else 0]), initial_state))
+    states = list(map(lambda s: np.asarray([1 if s == 0 else 0, 1 if s == 1 else 0], dtype='complex64'), initial_state))
 
     for q in new_qubit_order:
         states_to_entangle.append(states[q])

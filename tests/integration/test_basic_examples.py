@@ -1,8 +1,9 @@
-from shor.gates import CNOT, Hadamard
+from shor.gates import CNOT, Hadamard,Ry
 from shor.layers import Qubits
 from shor.operations import Measure
 from shor.quantum import Circuit
 from shor.backends import QuantumSimulator, QSession
+import numpy as np
 
 
 def test_single_qubit():
@@ -95,4 +96,5 @@ def test_multi_hadamard():
     # All 16 states should be relatively equal probability
     assert len(result.counts) == 16
     assert max(result.counts.values()) - min(result.counts.values()) < 50
+
 
