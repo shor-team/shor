@@ -67,25 +67,25 @@ def test_swap_integration(): #
     assert result['01'] == 1024
 
 
-#def test_ccnot_integration():
-#    circuit = Circuit()
-#    circuit.add(Qubits(3))
-#    circuit.add(PauliX(0))
-#    circuit.add(PauliX(1))
-#    circuit.add(CCNOT(0, 1, 2))
-#    circuit.add(Measure(0, 1, 2))
-#
-#    sess = QSession(backend=QuantumSimulator())
-#    result = sess.run(circuit, num_shots=1024)
-#
-#    assert result['000'] == 0
-#    assert result['001'] == 0
-#    assert result['010'] == 0
-#    assert result['100'] == 0
-#    assert result['110'] == 0
-#    assert result['101'] == 0
-#    assert result['011'] == 0
-#    assert result['111'] == 1024
+def test_ccnot_integration():
+   circuit = Circuit()
+   circuit.add(Qubits(3))
+   circuit.add(PauliX(0))
+   circuit.add(PauliX(1))
+   circuit.add(CCNOT(0, 1, 2))
+   circuit.add(Measure(0, 1, 2))
+
+   sess = QSession(backend=QuantumSimulator())
+   result = sess.run(circuit, num_shots=1024)
+
+   assert result['000'] == 0
+   assert result['001'] == 0
+   assert result['010'] == 0
+   assert result['100'] == 0
+   assert result['110'] == 0
+   assert result['101'] == 0
+   assert result['011'] == 0
+   assert result['111'] == 1024
 
 
 def test_s_integration():

@@ -28,6 +28,9 @@ class _Gate(_BaseLayer):
     def num_states(self):
         return np.power(2, self.dimension)
 
+    def to_matrix(self) -> np.ndarray:
+        return np.eye(self.num_states())
+
 
 class CNOT(_Gate):
     def __init__(self, *qubits, **kwargs):
