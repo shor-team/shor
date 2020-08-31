@@ -24,7 +24,7 @@ def factor(N: int) -> Tuple[int, int]:
         # r = shor.quantum.shor.period(a, N)
         r = find_period(a, N)
 
-        a_pow_r_o_2 = a ^ (r / 2)
+        a_pow_r_o_2 = a ^ (r / 2)  #broken here, TypeError: unsupported operand type(s) for /: 'QResult' and 'int'
 
         # if r is odd or
         if r & 1 == 1 or (a_pow_r_o_2 + 1) % N == 0:
