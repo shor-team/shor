@@ -1,10 +1,13 @@
-from shor.gates import Hadamard, PauliX, CCNOT, SWAP, CRZ, CH, S, Sdg, T, Tdg, PauliY, PauliZ, ID, Cx, U1, U3, U2, Rx, Cz, Ry, Rz
-from shor.layers import Qubits
+from shor.gates import Hadamard, PauliX, CCNOT, SWAP, CRZ, CH, S, Sdg, T, Tdg, PauliY, PauliZ, ID, Cx, U1, U3, U2, Rx, \
+    Cz, Ry, Rz, H, QFT
+from shor.layers import Qubits, Qbits
 from shor.operations import Measure
 from shor.quantum import Circuit
 from shor.backends import QuantumSimulator, QSession
 import numpy as np
 import math
+
+from shor.utils.visual import plot_results
 
 
 def test_ch_integration():
@@ -321,3 +324,53 @@ def test_U2_int():
     assert result_1['0'] > 450
     assert result_1['1'] > 450
 
+
+def test_QFT():
+    qbits = Qbits(4)
+    X = Circuit()
+    X.add(qbits)
+    X.add(H(0)).add(H(1)).add(H(2)).add(H(3))
+    X.add(QFT(0,1,2,3))
+    X.add(Measure(0,1,2,3))
+    #
+    # qc2 = QuantumCircuit() + H(qbits[0]) + X(qbits[1])
+    #
+    # qbits = Qbits(4)
+    # qc = H(qbits) * QFT(qbits)
+    #
+    # qc += QFT(qbits[0:3])
+    # qc += qc2
+    #
+    # qc.add(H())
+    #
+    # qc = H(qc[0:3])
+    # qc = Z(qc[1])
+    #
+    # qbits = Qbits(4)
+    # cbits = Cbits(4)
+    #
+    # qc = QuantumCircuit(qbits=qbits, cbits=cbits)
+    # -> err
+    # qc += Hadamard(qbits[0]) + Z(qbits[1])
+    #
+    # qc.add(Measure(qbits[0]))
+    # qc += Measure(qbits[0])
+    #
+    # qc.add(Measure(qbits), name='Output')
+
+
+
+    # X = Circuit(qbits)
+    # X = H(X)
+    # Y = Z(X)
+    # A = H(X)
+    #
+    # qbits = Qbits(4)
+    # X = Circuit() + qbits + H(qbits) + QFT(qbits) + Measure(qbits)
+    #
+    # Y = X.run(QuantumSimulator, times=100)
+
+    sess = QSession(backend=QuantumSimulator())
+    result = sess.run(X, num_shots=1024)
+
+    plot_results(result)

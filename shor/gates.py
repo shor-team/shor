@@ -1,11 +1,15 @@
 import math
+from typing import Union, Iterable
 
 import numpy as np
 
-from shor.layers import _BaseLayer
+from shor.layers import _Layer
+from shor.utils.collections import flatten
+
+QbitOrIterable = Union[int, Iterable]
 
 
-class _Gate(_BaseLayer):
+class _Gate(_Layer):
     """Abstract base quantum gate class
 
     # Properties
@@ -13,13 +17,17 @@ class _Gate(_BaseLayer):
     qubits = indices of qubits, to be used as input to gate.
     """
 
-    def __init__(self, *qubits: int, **kwargs):
+    def __init__(self, *qbits: QbitOrIterable, **kwargs):
         super().__init__(**kwargs)
+        self.qbits = flatten(qbits) if qbits else [0]
         self.dimension = kwargs.get('dimension', 1)
-        self.qubits = qubits if qubits else [0]
 
-        assert all(map(lambda q: type(q) == int, self.qubits))
-        assert len(self.qubits) == self.dimension
+        assert all(map(lambda q: type(q) == int, self.qbits))
+        assert len(self.qbits) == self.dimension
+
+    @property
+    def qubits(self):
+        return self.qbits
 
     def to_gates(self):
         return [self]
@@ -30,6 +38,20 @@ class _Gate(_BaseLayer):
 
     def to_matrix(self) -> np.ndarray:
         return np.eye(self.num_states())
+
+    @property
+    def matrix(self):
+        return self.to_matrix()
+
+    def invert(self):
+        return self
+
+    @property
+    def I(self):
+        return self.invert()
+
+    def __invert__(self):
+        return self.invert()
 
 
 class CNOT(_Gate):

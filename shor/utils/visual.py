@@ -1,7 +1,11 @@
+
+import matplotlib.pyplot as plt
+
+from shor.backends import QResult
 from shor.quantum import Circuit
 
-import os
-import pydot
+
+# import pydot
 
 
 def plot_circuit(circuit: Circuit, to_file='model.png'):
@@ -26,3 +30,10 @@ def circuit_to_dot(circuit: Circuit):
         circuit: A shor.quantum.Circuit object
     """
     pass
+
+
+def plot_results(result: QResult):
+    plt.bar(list(result.counts.keys()), result.counts)
+    plt.xticks([i for i in range(0, 2 ** result.sig_bits, 5)])
+    plt.show()
+    plt.get()

@@ -15,7 +15,7 @@ class _GateTuple(NamedTuple):
 
 
 class _QuantumBackend(object):
-    def run(self, initial_state, gates, measure_bits, num_shots):
+    def run(self, initial_state: List[int], gates: List[_Gate], measure_bits: List[int], num_shots, **kwargs):
         pass
 
 
@@ -24,7 +24,7 @@ class QuantumSimulator(_QuantumBackend):
     @staticmethod
     @lru_cache(maxsize=10)
     def combine_gates(gates: Tuple[_Gate]) -> _GateTuple:
-        to_combine: Deque[_GateTuple] = deque(_GateTuple(g.qubits, g.to_matrix(), i) for i, g in enumerate(gates))
+        to_combine: Deque[_GateTuple] = deque(_GateTuple(g.qbits, g.to_matrix(), i) for i, g in enumerate(gates))
         combined: Deque[_GateTuple] = deque()
 
         while len(to_combine) > 1:
@@ -55,9 +55,9 @@ class QuantumSimulator(_QuantumBackend):
                         right_gate.order
                     ))
                 else:
-                    common_qubits = [q for q in left_gate.qubits if q in right_gate.qubits]
-                    left_only_qbits = [q for q in left_gate.qubits if q not in common_qubits]
-                    right_only_qbits = [q for q in right_gate.qubits if q not in common_qubits]
+                    common_qubits = tuple(q for q in left_gate.qubits if q in right_gate.qubits)
+                    left_only_qbits = tuple(q for q in left_gate.qubits if q not in common_qubits)
+                    right_only_qbits = tuple(q for q in right_gate.qubits if q not in common_qubits)
                     all_qubits = left_only_qbits + common_qubits + right_only_qbits
 
                     new_left_qbit_order = left_only_qbits + common_qubits
@@ -87,7 +87,7 @@ class QuantumSimulator(_QuantumBackend):
 
         return to_combine.pop()
 
-    def run(self, initial_state: np.ndarray, gates: List[_Gate], measure_bits: List[int], num_shots):
+    def run(self, initial_state: List[int], gates: List[_Gate], measure_bits: List[int], num_shots, **kwargs):
         combined = self.combine_gates(tuple(gates))
         new_qubit_order = combined.qubits
         state_vector = get_entangled_initial_state(initial_state, new_qubit_order)

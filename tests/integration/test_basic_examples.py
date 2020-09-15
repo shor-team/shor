@@ -3,7 +3,6 @@ from shor.layers import Qubits
 from shor.operations import Measure
 from shor.quantum import Circuit
 from shor.backends import QuantumSimulator, QSession
-import numpy as np
 
 
 def test_single_qubit():
@@ -28,7 +27,6 @@ def test_entanglement():
     circuit.add(Hadamard(0))
     circuit.add(CNOT(0, 1))
     circuit.add(Measure(0, 1))
-
     sess = QSession(backend=QuantumSimulator())
     result = sess.run(circuit, num_shots=1024)
 
