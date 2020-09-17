@@ -16,6 +16,9 @@ class _Gate(_Layer):
     input_length = valid length of input qubits
     qubits = indices of qubits, to be used as input to gate.
     """
+    @property
+    def symbol(self):
+        return self.__class__.__name__.lower()
 
     def __init__(self, *qbits: QbitOrIterable, **kwargs):
         super().__init__(**kwargs)
@@ -55,6 +58,7 @@ class _Gate(_Layer):
 
 
 class CNOT(_Gate):
+    symbol='cx'
     def __init__(self, *qubits, **kwargs):
         kwargs['dimension'] = 2
         if not qubits:
@@ -83,6 +87,7 @@ class CSWAP(_Gate):
 
 
 class Hadamard(_Gate):
+    symbol='h'
     def __init__(self, *qubits, **kwargs):
         kwargs['dimension'] = 1
         if not qubits:

@@ -31,5 +31,7 @@ def test_modulus_circuit():
     circuit.add(quantum_amod_15(4))
     circuit.add(Measure(0, 1))
 
-    result = circuit.run(1024)
+    job = circuit.run(1024)
+    result = job.result
+
     print(result)

@@ -1,7 +1,7 @@
 
 import matplotlib.pyplot as plt
 
-from shor.backends import QResult
+from shor.providers.base import Result
 from shor.quantum import Circuit
 
 
@@ -32,7 +32,7 @@ def circuit_to_dot(circuit: Circuit):
     pass
 
 
-def plot_results(result: QResult):
+def plot_results(result: Result):
     plt.bar(list(result.counts.keys()), result.counts)
     plt.xticks([i for i in range(0, 2 ** result.sig_bits, 5)])
     plt.show()

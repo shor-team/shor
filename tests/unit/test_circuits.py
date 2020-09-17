@@ -19,11 +19,8 @@ def test_apis():
     qc += H(even) + X(odd)
     qc.add(Measure(qbits))
 
-    qc.show()
-    qc.graph()
-
-    result = qc.run()
-
+    job = qc.run()
+    result = job.result
     # Any single qbit should accept
     # A single qbit
     H(qbits[1])

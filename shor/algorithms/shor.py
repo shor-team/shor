@@ -43,7 +43,7 @@ def find_period(a, N):
     This uses the quantum fourier transform.
     """
 
-    circuit = Circuit()
+    circuit = QuantumCircuit()
 
     # circuit.add(Qubits(5))
     # circuit.add(QFT(0, 1, 2, 3))
@@ -57,11 +57,10 @@ def find_period(a, N):
     circuit.add(quantum_amod_15(a))
     circuit.add(QFT(3, 2, 1, 0))  # Inverse Quantum Fourier transform
 
-    from shor.backends import QuantumSimulator, QSession
-
-
-    sess = QSession(backend=QuantumSimulator())
-    result = sess.run(circuit, num_shots=1024)
+    from shor.providers.ShorSimulator import QSession
+    from shor.providers.ShorSimulator import QuantumSimulator
+    job = circuit.run(1024)
+    result = job.result
     plot_results(result)
 
     return result

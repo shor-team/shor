@@ -2,6 +2,7 @@ from typing import List, Union
 
 import numpy as np
 
+from shor.gates import _Gate
 from shor.layers import _Layer, Qbits
 from shor.operations import Measure
 
@@ -27,7 +28,7 @@ class QuantumCircuit(object):
 
         return initial_qubits
 
-    def to_gates(self):
+    def to_gates(self) -> List[_Gate]:
         gates = []
         for layer in self.layers:
             gates.extend(layer.to_gates())
@@ -42,12 +43,13 @@ class QuantumCircuit(object):
     def __add__(self, other):
         return self.add(other)
 
-    def run(self, num_shots: int,  backend: '_QuantumBackend' = None, **kwargs):
-        if backend is None:
-            from shor.backends import QuantumSimulator
-            backend = QuantumSimulator()
+    def run(self, num_shots: int,  provider: 'Provider' = None, **kwargs):
+        if provider is None:
+            from shor.providers.ShorSimulator import ShorSimulator
+            provider = ShorSimulator()
 
-        return backend.run(self.initial_state(), self.to_gates(), self.measure_bits(), num_shots, **kwargs)
+        return provider.run(self, num_shots)
+        # backend.run(self.initial_state(), self.to_gates(), self.measure_bits(), num_shots, **kwargs)
 
 
 # Aliases
