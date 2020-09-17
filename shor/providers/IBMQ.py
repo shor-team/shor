@@ -61,8 +61,8 @@ class IBMQProvider(Provider):
 
         for gate_or_op in quantum_circuit.to_gates(include_operations=True):
             if isinstance(gate_or_op, _Operation):
-                qiskit_circuit.__getattribute__(gate_or_op.symbol)(gate_or_op.qbits, gate_or_op.bits)
+                qiskit_circuit.__getattribute__(gate_or_op.symbol.lower())(gate_or_op.qbits, gate_or_op.bits)
             else:
-                qiskit_circuit.__getattribute__(gate_or_op.symbol)(*gate_or_op.qbits)
+                qiskit_circuit.__getattribute__(gate_or_op.symbol.lower())(*gate_or_op.qbits)
 
         return qiskit_circuit
