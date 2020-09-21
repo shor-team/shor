@@ -1,5 +1,6 @@
 from typing import List
 
+from shor.operations import _Operation
 from shor.providers.base import Provider, Job, Result
 
 from qiskit import execute, Aer, QuantumCircuit
@@ -16,7 +17,7 @@ class IBMQResult(Result):
 
     @property
     def counts(self):
-        return {int_from_bit_string(k) for k,v in self.ibmq_result.get_counts()}
+        return {int_from_bit_string(k): v for k, v in self.ibmq_result.get_counts().items()}
 
     @property
     def sig_bits(self):
@@ -55,12 +56,13 @@ class IBMQProvider(Provider):
     def _to_qiskit_circuit(quantum_circuit: QC) -> QuantumCircuit:
         qiskit_circuit = QuantumCircuit(
             len(quantum_circuit.initial_state()),
-            len(quantum_circuit.initial_state()),  # Measuring all here, it appears that bit order is reversed (sig bit on left)
+            len(quantum_circuit.measure_bits()),
         )
 
-        for gate in quantum_circuit.to_gates():
-            qiskit_circuit.__getattribute__(gate.symbol)(*gate.qbits)
-
-        qiskit_circuit.measure_all()
+        for gate_or_op in quantum_circuit.to_gates(include_operations=True):
+            if isinstance(gate_or_op, _Operation):
+                qiskit_circuit.__getattribute__(gate_or_op.symbol)(gate_or_op.qbits, gate_or_op.bits)
+            else:
+                qiskit_circuit.__getattribute__(gate_or_op.symbol)(*gate_or_op.qbits)
 
         return qiskit_circuit

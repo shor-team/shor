@@ -13,12 +13,19 @@ class _Operation(_Layer):
 
 
 class Measure(_Operation):
-    def __init__(self, *bits, axis='z', **kwargs):
+    symbol = 'measure'
+
+    def __init__(self, qbits=None, bits=None, axis='z', **kwargs):
+        if not qbits:
+            qbits = [0]
         if not bits:
-            bits = [0]
+            bits = qbits[:]
+
+        self.qbits = qbits
         self.bits = bits
 
         super().__init__(**kwargs, axis=axis)
+
 
 # Aliases
 M = m = Measure
