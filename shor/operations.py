@@ -1,7 +1,7 @@
-from shor.layers import _BaseLayer
+from shor.layers import _Layer
 
 
-class _Operation(_BaseLayer):
+class _Operation(_Layer):
     """Abstract base quantum computing operation class
     """
 
@@ -19,3 +19,6 @@ class Measure(_Operation):
         self.bits = bits
 
         super().__init__(**kwargs, axis=axis)
+
+# Aliases
+M = m = Measure

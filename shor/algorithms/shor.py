@@ -6,6 +6,7 @@ from shor.gates import X, CNOT, CSWAP, H, Rx, QFT
 from shor.layers import Qubits
 from shor.operations import Measure
 from shor.quantum import Circuit
+from shor.utils.visual import plot_results
 
 
 def factor(N: int) -> Tuple[int, int]:
@@ -42,16 +43,26 @@ def find_period(a, N):
     This uses the quantum fourier transform.
     """
 
-    circuit = Circuit()
+    circuit = QuantumCircuit()
+
+    # circuit.add(Qubits(5))
+    # circuit.add(QFT(0, 1, 2, 3))
+    # circuit.add(X(4))
+    # circuit.add(quantum_amod_15(a))
+    # circuit.add(QFT(0, 1, 2, 3))
+
     circuit.add(Qubits(5))
-    circuit.add(QFT(0, 1, 2, 3))
+    circuit.add(H(0)).add(H(1)).add(H(2)).add(H(3))
+    circuit.add(X(4))
     circuit.add(quantum_amod_15(a))
     circuit.add(QFT(3, 2, 1, 0))  # Inverse Quantum Fourier transform
 
-    from shor.backends import QuantumSimulator, QSession
+    from shor.providers.ShorSimulator import QSession
+    from shor.providers.ShorSimulator import QuantumSimulator
+    job = circuit.run(1024)
+    result = job.result
+    plot_results(result)
 
-    sess = QSession(backend=QuantumSimulator())
-    result = sess.run(circuit, num_shots=1024)
     return result
 
 
