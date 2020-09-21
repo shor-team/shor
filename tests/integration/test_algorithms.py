@@ -29,7 +29,7 @@ def test_modulus_circuit():
     circuit = Circuit()
     circuit.add(Qbits(5))
     circuit.add(quantum_amod_15(4))
-    circuit.add(Measure(0, 1))
+    circuit.add(Measure([0, 1]))
 
     job = circuit.run(1024)
     result = job.result

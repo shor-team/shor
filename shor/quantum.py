@@ -4,7 +4,7 @@ import numpy as np
 
 from shor.gates import _Gate
 from shor.layers import _Layer, Qbits
-from shor.operations import Measure
+from shor.operations import Measure, _Operation
 
 
 class QuantumCircuit(object):
@@ -28,16 +28,18 @@ class QuantumCircuit(object):
 
         return initial_qubits
 
-    def to_gates(self) -> List[_Gate]:
+    def to_gates(self, include_operations=False) -> List[_Gate]:
         gates = []
         for layer in self.layers:
-            gates.extend(layer.to_gates())
+            operation_or_gates = [layer] if include_operations and isinstance(layer, _Operation) else layer.to_gates()
+
+            gates.extend(operation_or_gates)
         return gates
 
     def measure_bits(self):
         measure_bits = []
         for m in filter(lambda l: type(l) == Measure, self.layers):
-            measure_bits.extend(m.bits)
+            measure_bits.extend(m.qbits)
         return measure_bits
 
     def __add__(self, other):
@@ -49,7 +51,6 @@ class QuantumCircuit(object):
             provider = ShorSimulator()
 
         return provider.run(self, num_shots)
-        # backend.run(self.initial_state(), self.to_gates(), self.measure_bits(), num_shots, **kwargs)
 
 
 # Aliases

@@ -8,8 +8,8 @@ from shor.quantum import Circuit
 def test_single_qubit():
     circuit = Circuit()
     circuit.add(Qubits(1))
-    circuit.add(Hadamard())  # Can also use H()
-    circuit.add(Measure())
+    circuit.add(Hadamard(0))
+    circuit.add(Measure([0]))
 
     job = circuit.run(1024, provider=IBMQProvider())
     result = job.result
@@ -23,7 +23,7 @@ def test_entanglement():
     circuit.add(Qubits(2))
     circuit.add(Hadamard(0))
     circuit.add(CNOT(0, 1))
-    circuit.add(Measure(0, 1))
+    circuit.add(Measure([0, 1]))
     job = circuit.run(1024)
     result = job.result
     assert result['01'] == 0
@@ -39,7 +39,7 @@ def test_unitary_symmetry_does_nothing():
     symmetric_circuit_1.add(Hadamard(0))
     symmetric_circuit_1.add(CNOT(0, 1))
     symmetric_circuit_1.add(CNOT(0, 1))
-    symmetric_circuit_1.add(Measure(0, 1))
+    symmetric_circuit_1.add(Measure([0, 1]))
 
     symmetric_circuit_2 = Circuit()
     symmetric_circuit_2.add(Qubits(2, state=1))
@@ -47,7 +47,7 @@ def test_unitary_symmetry_does_nothing():
     symmetric_circuit_2.add(CNOT(0, 1))
     symmetric_circuit_2.add(CNOT(0, 1))
     symmetric_circuit_2.add(Hadamard(0))
-    symmetric_circuit_2.add(Measure(0, 1))
+    symmetric_circuit_2.add(Measure([0, 1]))
 
     result_1 = symmetric_circuit_1.run(1024).result
     result_2 = symmetric_circuit_2.run(1024).result
@@ -63,7 +63,7 @@ def test_multi_entangle():
     circuit.add(CNOT(0, 1))
     circuit.add(CNOT(0, 2))
     circuit.add(CNOT(0, 3))
-    circuit.add(Measure(0, 1, 2, 3))
+    circuit.add(Measure([0, 1, 2, 3]))
     job = circuit.run(1024)
     result = job.result
     assert result['0001'] == 0
@@ -79,7 +79,7 @@ def test_multi_hadamard():
     circuit.add(Hadamard(1))
     circuit.add(Hadamard(2))
     circuit.add(Hadamard(3))
-    circuit.add(Measure(0, 1, 2, 3))
+    circuit.add(Measure([0, 1, 2, 3]))
     job = circuit.run(1024)
     result = job.result
     # All 16 states should be relatively equal probability

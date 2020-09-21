@@ -10,7 +10,7 @@ def test_ibmq_backend_simulator():
     qc.add(Qbits(3))
     qc.add(H(1))
     qc.add(CNOT(1, 0))
-    qc.add(Measure(0, 1))
+    qc.add(Measure([0, 1]))
 
     ibm_provider = IBMQProvider()
     job = qc.run(1024, ibm_provider)

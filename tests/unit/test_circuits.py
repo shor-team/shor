@@ -17,7 +17,7 @@ def test_apis():
 
     qc = QuantumCircuit()
     qc += H(even) + X(odd)
-    qc.add(Measure(qbits))
+    qc.add(Measure([qbits]))
 
     job = qc.run()
     result = job.result
@@ -51,7 +51,7 @@ def test_apis():
 # -> err
 # qc += Hadamard(qbits[0]) + Z(qbits[1])
 #
-# qc.add(Measure(qbits[0]))
+# qc.add(Measure([qbits[0]]))
 # qc += Measure(qbits[0])
 #
 # qc.add(Measure(qbits), name='Output')
