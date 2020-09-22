@@ -58,7 +58,7 @@ class _Gate(_Layer):
 
 
 class CNOT(_Gate):
-    symbol='cx'
+    symbol='CX'
     def __init__(self, *qubits, **kwargs):
         kwargs['dimension'] = 2
         if not qubits:
@@ -71,7 +71,22 @@ class CNOT(_Gate):
         return np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0]])
 
 
+class CY(_Gate):
+    symbol = 'CY'
+    def __init__(self, *qubits, **kwargs):
+        kwargs['dimension'] = 2
+        if not qubits:
+            qubits = [0, 1]
+
+        super().__init__(*qubits, **kwargs)
+
+    @staticmethod
+    def to_matrix() -> np.ndarray:
+        return np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, -1*1j], [0, 0, 1j, 0]])
+
+
 class CSWAP(_Gate):
+    symbol = 'CSWAP'
     def __init__(self, *qubits, **kwargs):
         kwargs['dimension'] = 3
         if not qubits:
@@ -86,8 +101,10 @@ class CSWAP(_Gate):
         return cswap_matrix
 
 
+
+
 class Hadamard(_Gate):
-    symbol='h'
+    symbol = 'H'
     def __init__(self, *qubits, **kwargs):
         kwargs['dimension'] = 1
         if not qubits:
@@ -100,6 +117,7 @@ class Hadamard(_Gate):
 
 
 class PauliX(_Gate):
+    symbol = 'X'
     def __init__(self, *qubits, **kwargs):
         kwargs['dimension'] = 1
         if not qubits:
@@ -113,6 +131,7 @@ class PauliX(_Gate):
 
 
 class PauliY(_Gate):
+    symbol = 'Y'
     def __init__(self, *qubits, **kwargs):
         kwargs['dimension'] = 1
         if not qubits:
@@ -126,6 +145,7 @@ class PauliY(_Gate):
 
 
 class PauliZ(_Gate):
+    symbol = 'Z'
     def __init__(self, *qubits, **kwargs):
         kwargs['dimension'] = 1
         if not qubits:
@@ -169,6 +189,7 @@ class QFT(_Gate):
 
 
 class Rx(_Gate):
+    symbol = 'RX'
     def __init__(self, *qubits, angle=math.pi/2, **kwargs):
         kwargs['dimension'] = 1
         self.angle=angle
@@ -185,6 +206,7 @@ class Rx(_Gate):
 
 
 class Ry(_Gate):
+    symbol = 'RY'
     def __init__(self, *qubits, angle=math.pi/2, **kwargs):
         kwargs['dimension'] = 1
         self.angle=angle
@@ -201,6 +223,7 @@ class Ry(_Gate):
 
 
 class SWAP(_Gate):
+    symbol = 'SWAP'
     def __init__(self, *qubits, **kwargs):
         kwargs['dimension'] = 2
         if not qubits:
@@ -214,6 +237,7 @@ class SWAP(_Gate):
     
 
 class Cx(_Gate):
+    symbol = 'CX'
     def __init__(self, *qubits, **kwargs):
         kwargs['dimension'] = 2
         if not qubits:
@@ -227,6 +251,7 @@ class Cx(_Gate):
 
 
 class CCNOT(_Gate):
+    symbol = 'CCX'
     def __init__(self, *qubits, **kwargs):
         kwargs['dimension'] = 3
         if not qubits:
@@ -244,6 +269,7 @@ class CCNOT(_Gate):
 
 
 class CRZ(_Gate):
+    symbol = 'CRZ'
     def __init__(self, *qubits, angle=0, **kwargs):
         kwargs['dimension'] = 2
         self.angle = angle
@@ -253,11 +279,12 @@ class CRZ(_Gate):
         super().__init__(*qubits, **kwargs)
 
     def to_matrix(self) -> np.ndarray:
-        return np.array([[1, 0, 0, 0], [0, np.exp(-1j*self.angle/2), 0, 0],
-                          [0, 0, 1, 0], [0, 0, 0, np.exp(1j*self.angle/2)]])
+        return np.array([[1, 0, 0, 0], [0,1, 0, 0],
+                          [0, 0, np.exp(-1j*self.angle/2), 0], [0, 0, 0, np.exp(1j*self.angle/2)]])
 
 
 class CH(_Gate):
+    symbol = 'CH'
     def __init__(self, *qubits, **kwargs):
         kwargs['dimension'] = 2
         if not qubits:
@@ -271,6 +298,7 @@ class CH(_Gate):
 
 
 class S(_Gate):
+    symbol = 'S'
     def __init__(self, *qubits, **kwargs):
         kwargs['dimension'] = 1
         if not qubits:
@@ -284,6 +312,7 @@ class S(_Gate):
     
 
 class Sdg(_Gate):
+    symbol = 'Sdg'
     def __init__(self, *qubits, **kwargs):
         kwargs['dimension'] = 1
         if not qubits:
@@ -297,6 +326,7 @@ class Sdg(_Gate):
 
 
 class T(_Gate):
+    symbol = 'T'
     def __init__(self, *qubits, **kwargs):
         kwargs['dimension'] = 1
         if not qubits:
@@ -310,6 +340,7 @@ class T(_Gate):
 
 
 class Tdg(_Gate):
+    symbol = 'Tdg'
     def __init__(self, *qubits, **kwargs):
         kwargs['dimension'] = 1
         if not qubits:
@@ -323,6 +354,7 @@ class Tdg(_Gate):
     
 
 class ID(_Gate):
+    symbol = 'I'
     def __init__(self, *qubits, **kwargs):
         kwargs['dimension'] = 1
         if not qubits:
@@ -336,6 +368,7 @@ class ID(_Gate):
 
 
 class U1(_Gate):
+    symbol = 'U1'
     def __init__(self, *qubits, angle=0, **kwargs):
         kwargs['dimension'] = 1
         self.angle=angle
@@ -352,6 +385,7 @@ class U1(_Gate):
 
 
 class Cz(_Gate):
+    symbol = 'CZ'
     def __init__(self,*qubits,**kwargs):
         kwargs['dimension'] = 2
         if not qubits:
@@ -364,6 +398,7 @@ class Cz(_Gate):
 
 
 class Ry(_Gate):
+    symbol = 'RY'
     def __init__(self, *qubits, angle=math.pi / 2, **kwargs):
         kwargs['dimension'] = 1
         self.angle = angle
@@ -380,6 +415,7 @@ class Ry(_Gate):
 
 
 class Rz(_Gate):
+    symbol = 'RZ'
     def __init__(self, *qubits, angle, **kwargs):
         self.angle = angle
         kwargs['dimension'] = 1
@@ -392,6 +428,7 @@ class Rz(_Gate):
 
 
 class U3(_Gate):
+    symbol = 'U3'
     def __init__(self, *qubits, theta=0, phi=0, alpha=0, **kwargs):
         kwargs['dimension'] = 1
         self.theta = theta
@@ -412,12 +449,59 @@ class U3(_Gate):
 
 
 class U2(_Gate):
+    symbol = 'U2'
     def __init__(self, *qubits, **kwargs):
         self.U3 = U3(0, theta=np.pi / 2, **kwargs)
         super().__init__(*qubits, **kwargs)
 
     def to_matrix(self) -> np.ndarray:
         return self.U3.to_matrix()
+
+
+class Init_x(_Gate):
+    def __init__(self, *qubits, **kwargs):
+        self.H = Hadamard(0)
+        kwargs['dimension'] = 1
+        super().__init__(*qubits, **kwargs)
+
+    def to_matrix(self) -> np.ndarray:
+        return self.H.to_matrix()
+
+
+class Init_y(_Gate):
+    def __init__(self, *qubits, **kwargs):
+        self.H = Hadamard(0)
+        self.S = S()
+        kwargs['dimension'] = 1
+        super().__init__(*qubits, **kwargs)
+
+    def to_matrix(self) -> np.ndarray:
+        return self.S.to_matrix(self.H.to_matrix())
+
+
+class Cr(_Gate):
+    symbol = 'CU1'
+    def __init__(self, *qubits, angle, **kwargs):
+        self.angle = angle
+        kwargs['dimension'] = 2
+        if not qubits:
+            qubits = [0]
+        super().__init__(*qubits, **kwargs)
+
+    def to_matrix(self) -> np.ndarray:
+        return np.array([[1, 0, 0, 0], [0, 1, 0, 0],[0, 0, 1, 0],[0, 0, 0, np.exp(1j*self.angle)]], dtype='complex')
+
+
+class CRk(_Gate):
+    def __init__(self, *qubits, k, **kwargs):
+        self.k = k
+        kwargs['dimension'] = 2
+        if not qubits:
+            qubits = [0]
+        super().__init__(*qubits, **kwargs)
+
+    def to_matrix(self) -> np.ndarray:
+        return np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, np.exp(2*1j*np.pi/2**self.k)]], dtype='complex')
 
 
 # Aliases

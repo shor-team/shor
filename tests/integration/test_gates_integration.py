@@ -1,11 +1,14 @@
-from shor.gates import Hadamard, PauliX, CCNOT, SWAP, CRZ, CH, S, Sdg, T, Tdg, PauliY, PauliZ, ID, Cx, U1, U3, U2, Rx, \
-    Cz, Ry, Rz, H, QFT
-from shor.layers import Qubits, Qbits
-from shor.operations import Measure
-from shor.quantum import Circuit
-import numpy as np
 import math
 
+import numpy as np
+
+from shor.gates import H, QFT
+from shor.gates import Hadamard, PauliX, CCNOT, SWAP, CRZ, CH, S, Sdg, T, Tdg, PauliY, PauliZ, ID, Cx, U1, U3, U2, Rx, \
+    Cz, Ry, Rz, Cr, CRk, CNOT, Init_x, Init_y, CY
+from shor.layers import Qbits
+from shor.layers import Qubits
+from shor.operations import Measure
+from shor.quantum import Circuit
 from shor.utils.visual import plot_results
 
 
@@ -13,6 +16,7 @@ def test_ch_integration():
     circuit = Circuit()
     circuit.add(Qubits(2))
     circuit.add(PauliX(0))
+    circuit.add(PauliX(1))
     circuit.add(CH(0, 1))
 
     job = circuit.run(1024)
@@ -165,7 +169,7 @@ def test_pauliz_integration():
     assert result['1'] > 450
 
 
-def test_ID_qubit():
+def test_id_qubit():
     circuit = Circuit()
     circuit.add(Qubits(1))
     circuit.add(ID(0))
@@ -215,7 +219,7 @@ def test_cx_int():
     assert result_2['11'] > 450
 
 
-def test_Cz_int():
+def test_cz_int():
     circuit = Circuit()
     circuit.add(Qubits(2))
     circuit.add(Hadamard(0))
@@ -230,6 +234,34 @@ def test_Cz_int():
     assert result['11'] > 210
 
 
+def test_cr_int():
+    circuit = Circuit()
+    circuit.add(Qubits(2))
+    circuit.add(Cr(0, 1, angle=np.pi/2))
+    circuit.add(Measure(0, 1))
+
+    result = circuit.run(1000).result
+
+    assert result['00'] == 1000
+    assert result['01'] == 0
+    assert result['10'] == 0
+    assert result['11'] == 0
+
+
+def test_crk_int():
+    circuit = Circuit()
+    circuit.add(Qubits(2))
+    circuit.add(CRk(0, 1, k=2))
+    circuit.add(Measure(0, 1))
+
+    result = circuit.run(1000).result
+
+    assert result['00'] == 1000
+    assert result['01'] == 0
+    assert result['10'] == 0
+    assert result['11'] == 0
+
+
 def test_ry_int():
     circuit = Circuit()
     circuit.add(Qubits(1))
@@ -237,6 +269,7 @@ def test_ry_int():
     circuit.add(Measure([0]))
     job = circuit.run(1000)
     result = job.result
+
     assert result['0'] > 450
     assert result['1'] > 450
 
@@ -248,11 +281,12 @@ def test_rz_int():
     circuit.add(Measure([0]))
     job = circuit.run(1000)
     result = job.result
+
     assert result['0'] == 1000
     assert result['1'] == 0
 
 
-def test_U3_int():
+def test_u3_int():
     circuit_1 = Circuit()
     circuit_1.add(Qubits(1))
     circuit_1.add(U3(0, theta=np.pi / 2, phi=-np.pi / 2, alpha=np.pi / 2))
@@ -271,11 +305,66 @@ def test_U3_int():
     assert result_2['1'] > 450
 
 
-def test_U2_int():
+def test_u2_int():
     circuit_1 = Circuit()
     circuit_1.add(Qubits(1))
     circuit_1.add(U2(0, phi=-np.pi / 2, alpha=np.pi / 2))
     circuit_1.add(Measure([0]))
+    result_1 = circuit_1.run(1024).result
+
+    assert result_1['0'] > 450
+    assert result_1['1'] > 450
+
+
+def test_multi_gate_int():
+    circuit_1 = Circuit()
+    circuit_1.add(Qubits(2))
+    circuit_1.add(PauliX(0))
+    circuit_1.add(CNOT(0, 1))
+    circuit_1.add(CH(0, 1))
+    circuit_1.add(Measure(0,1))
+
+    result_1 = circuit_1.run(1024).result
+
+    assert result_1['00'] == 0
+    assert result_1['11'] > 450
+    assert result_1['10'] > 450
+    assert result_1['01'] == 0
+    # I don't know if im screwing something up here or if the index order is wrong
+
+def test_switch_input_int():
+    circuit_1 = Circuit()
+    circuit_1.add(Qubits(2))
+    circuit_1.add(PauliX(0))
+    circuit_1.add(CNOT(1, 0))
+    circuit_1.add(Measure(0,1))
+
+    result_1 = circuit_1.run(1024).result
+
+    assert result_1['00'] == 0
+    assert result_1['11'] == 0
+    assert result_1['10'] == 1024
+    assert result_1['01'] == 0
+
+
+def test_initx_int():
+    circuit_1 = Circuit()
+    circuit_1.add(Qubits(1))
+    circuit_1.add(Init_x(0))
+    circuit_1.add(Measure(0))
+
+    result_1 = circuit_1.run(1024).result
+
+    assert result_1['0'] > 450
+    assert result_1['1'] > 450
+
+
+def test_inity_int():
+    circuit_1 = Circuit()
+    circuit_1.add(Qubits(1))
+    circuit_1.add(Init_y(0))
+    circuit_1.add(Measure([0]))
+
     result_1 = circuit_1.run(1024).result
 
     assert result_1['0'] > 450
@@ -326,4 +415,33 @@ def test_QFT():
     # Y = X.run(QuantumSimulator, times=100)
     job = X.run(1024)
     result = job.result
-    plot_results(result)
+    # plot_results(result)
+
+def test_cy_int():
+    circuit_1 = Circuit()
+    circuit_1.add(Qubits(2))
+    circuit_1.add(PauliX(0))
+    circuit_1.add(CY(0, 1))
+    circuit_1.add(Measure(0,1))
+
+    result_1 = circuit_1.run(1024).result
+
+    assert result_1['00'] == 0
+    assert result_1['11'] == 1024
+    assert result_1['10'] == 0
+    assert result_1['01'] == 0
+
+
+def test_cz2_int():
+    circuit_1 = Circuit()
+    circuit_1.add(Qubits(2))
+    circuit_1.add(PauliX(0))
+    circuit_1.add(Cz(0, 1))
+    circuit_1.add(Measure(0,1))
+
+    result_1 = circuit_1.run(1024).result
+
+    assert result_1['00'] == 0
+    assert result_1['11'] == 0
+    assert result_1['10'] == 1024
+    assert result_1['01'] == 0

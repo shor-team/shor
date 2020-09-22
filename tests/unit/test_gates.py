@@ -182,8 +182,8 @@ def test_crz_matrix():
           
      assert is_square(g.to_matrix())
      assert is_unitary(g.to_matrix())
-     assert np.array_equal(g.to_matrix(), np.array([[1, 0, 0, 0], [0, np.exp(-1j*angle/2), 0, 0],
-                                                    [0, 0, 1, 0], [0, 0, 0, np.exp(1j*angle/2)]]))
+     assert np.array_equal(g.to_matrix(), np.array([[1, 0, 0, 0], [0, 1, 0, 0],
+                                                    [0, 0, np.exp(-1j*angle/2), 0], [0, 0, 0, np.exp(1j*angle/2)]]))
 
 
 def test_ch_matrix():
@@ -324,3 +324,32 @@ def test_u2_matrix():
                                                     np.exp(1j * (phi + alpha)) * math.cos(theta / 2)]]))
     assert np.allclose(g.to_matrix(), (1 / np.sqrt(2)) * np.array(
         [[1, -np.exp(1j * alpha)], [np.exp(1j * phi), np.exp(1j * (phi + alpha))]]))
+
+
+def test_cr_matrix():
+    from shor.gates import Cr
+    angle = np.pi/2
+    g = Cr(0, 1, angle = np.pi/2)
+
+    assert is_square(g.to_matrix())
+    assert is_unitary(g.to_matrix())
+    assert np.array_equal(g.to_matrix(), np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, np.exp(1j*angle)]]))
+
+
+def test_crk_matrix():
+    from shor.gates import CRk
+    k = 2
+    g = CRk(0, 1, k=2)
+
+    assert is_square(g.to_matrix())
+    assert is_unitary(g.to_matrix())
+    assert np.array_equal(g.to_matrix(), np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, np.exp((2*np.pi*1j)/(2**k))]]))
+
+
+def test_cy_matrix():
+    from shor.gates import CY
+    g = CY(0, 1)
+
+    assert is_square(g.to_matrix())
+    assert is_unitary(g.to_matrix())
+    assert np.array_equal(g.to_matrix(), np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, -1j], [0, 0, 1j, 0]]))

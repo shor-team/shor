@@ -1,4 +1,4 @@
-from shor.gates import CNOT, Hadamard
+from shor.gates import CNOT, Hadamard, PauliX, PauliZ
 from shor.layers import Qubits
 from shor.operations import Measure
 from shor.providers import IBMQProvider
@@ -87,3 +87,27 @@ def test_multi_hadamard():
     assert max(result.counts.values()) - min(result.counts.values()) < 50
 
 
+def test_teleportation():
+    circuit = Circuit()
+    circuit.add(Qubits(3))
+    circuit.add(CNOT(1, 2))
+    circuit.add(CNOT(0, 1))
+    circuit.add(Hadamard(0))
+    circuit.add(Measure([0, 1]))
+
+    result = circuit.run(1024).result
+
+    # All 16 states should be relatively equal probability
+    if result['11'] == 1024:
+        circuit.add(PauliX(2))
+        circuit.add(PauliZ(2))
+    elif result['10'] == 1024:
+        circuit.add(PauliZ(2))
+    elif result['01'] == 1024:
+        circuit.add(PauliX(2))
+    circuit.add(Measure(2))
+
+    result2 = circuit.run(1024).result
+
+    assert result == result2
+    assert result == result2
