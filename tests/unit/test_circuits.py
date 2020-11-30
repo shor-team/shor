@@ -7,8 +7,8 @@ from shor.quantum import QuantumCircuit
 def test_apis():
     qbits = Qbits(4)
     # Qbit
-        # id
-        # name
+    # id
+    # name
 
     # Implements iterable, so we get all of the nice
     # python indexing functionality
@@ -19,16 +19,18 @@ def test_apis():
     qc += H(even) + X(odd)
     qc.add(Measure([qbits]))
 
-    job = qc.run()
+    job = qc.run(100)
     result = job.result
+
+    assert result["1111"] == 0
     # Any single qbit should accept
     # A single qbit
     H(qbits[1])
     # An iterable / list of qbits
     H(qbits[0:5])
 
-
     # Control(H(qbits[1]), qbits[0])
+
 
 #
 # qc2 = QuantumCircuit() + H(qbits[0]) + X(qbits[1])

@@ -1,15 +1,14 @@
-from collections import deque, Counter
+from collections import Counter, deque
 from functools import lru_cache
-from typing import NamedTuple, List, Tuple, Deque, Dict
+from typing import Deque, Dict, List, NamedTuple, Tuple
 
 import numpy as np
 
 from shor.gates import _Gate
-from shor.providers import Provider, Result, Job
-from shor.providers.base import JobStatus, JobStatusCode
-from shor.quantum import Circuit, QuantumCircuit
-from shor.utils.qbits import has_common_qbits, change_qubit_order, get_entangled_initial_state, int_from_bit_string, \
-    int_to_bit_string
+from shor.providers import Job, Provider, Result
+from shor.providers.base import JobStatusCode
+from shor.quantum import QuantumCircuit
+from shor.utils.qbits import change_qubit_order, get_entangled_initial_state, has_common_qbits
 
 
 class _GateTuple(NamedTuple):
@@ -33,7 +32,6 @@ class ShorSimulatorResult(Result):
 
 
 class ShorSimulatorJob(Job):
-
     def __init__(self, status: JobStatusCode, result: Result):
         self._status = status
         self._result = result
@@ -71,20 +69,23 @@ class ShorSimulator(Provider):
                 can_combine_with_tensor = not has_common_qbits(left_gate, right_gate)
 
                 if can_combine_no_tensor:
-                    combined.append(_GateTuple(
-                        left_gate.qubits,
-                        change_qubit_order(right_gate.matrix, right_gate.qubits, left_gate.qubits).dot(left_gate.matrix),
-                        left_gate.order
-                    ))
+                    combined.append(
+                        _GateTuple(
+                            left_gate.qubits,
+                            change_qubit_order(right_gate.matrix, right_gate.qubits, left_gate.qubits).dot(
+                                left_gate.matrix
+                            ),
+                            left_gate.order,
+                        )
+                    )
                 elif can_combine_with_tensor:
-                    combined.append(_GateTuple(
-                        left_gate.qubits + right_gate.qubits,
-                        np.kron(
-                            left_gate.matrix,
-                            right_gate.matrix
-                        ),
-                        right_gate.order
-                    ))
+                    combined.append(
+                        _GateTuple(
+                            left_gate.qubits + right_gate.qubits,
+                            np.kron(left_gate.matrix, right_gate.matrix),
+                            right_gate.order,
+                        )
+                    )
                 else:
                     common_qubits = tuple(q for q in left_gate.qubits if q in right_gate.qubits)
                     left_only_qbits = tuple(q for q in left_gate.qubits if q not in common_qubits)
@@ -107,11 +108,7 @@ class ShorSimulator(Provider):
                     if qbits_to_add > 0:
                         new_right_gate = np.kron(np.eye(np.power(2, qbits_to_add)), new_right_gate)
 
-                    combined.append(_GateTuple(
-                        all_qubits,
-                        new_right_gate.dot(new_left_gate),
-                        right_gate.order
-                    ))
+                    combined.append(_GateTuple(all_qubits, new_right_gate.dot(new_left_gate), right_gate.order))
 
             to_combine += combined
             combined = deque()
@@ -128,8 +125,4 @@ class ShorSimulator(Provider):
 
         measured = Counter([np.random.choice(state_vector.shape[0], p=probabilities) for m in range(times)])
 
-        return ShorSimulatorJob(
-            JobStatusCode.COMPLETED,
-            ShorSimulatorResult(measured, len(new_qubit_order))
-        )
-
+        return ShorSimulatorJob(JobStatusCode.COMPLETED, ShorSimulatorResult(measured, len(new_qubit_order)))

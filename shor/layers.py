@@ -5,7 +5,7 @@ class _Layer(object):
     """Abstract base quantum layer class"""
 
     def __init__(self, **kwargs):
-        self.name = kwargs.get('name', 'Layer')
+        self.name = kwargs.get("name", "Layer")
         pass
 
     def to_gates(self):
@@ -18,7 +18,7 @@ class Qbits(_Layer, Iterable):
         self.state = state
         self._qbits = list(range(num))
 
-        super().__init__(name='Qbits ({})'.format(str(num)), **kwargs)
+        super().__init__(name="Qbits ({})".format(str(num)), **kwargs)
 
     def to_gates(self):
         return []

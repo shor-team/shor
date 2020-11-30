@@ -2,15 +2,14 @@ import math
 import random
 from typing import List, Tuple
 
-from shor.gates import X, CNOT, CSWAP, H, Rx, QFT
+from shor.gates import CNOT, CSWAP, QFT, H, Rx, X
 from shor.layers import Qubits
-from shor.operations import Measure
 from shor.quantum import Circuit
 from shor.utils.visual import plot_results
 
 
 def factor(N: int) -> Tuple[int, int]:
-    """ WIP not currently functioning.
+    """WIP not currently functioning.
 
     The classical part seems to be correct, but the quantum period finding function is incorrect
     at the moment.
@@ -25,7 +24,7 @@ def factor(N: int) -> Tuple[int, int]:
         # r = shor.quantum.shor.period(a, N)
         r = find_period(a, N)
 
-        a_pow_r_o_2 = a ^ (r / 2)  #broken here, TypeError: unsupported operand type(s) for /: 'QResult' and 'int'
+        a_pow_r_o_2 = a ^ (r / 2)  # broken here, TypeError: unsupported operand type(s) for /: 'QResult' and 'int'
 
         # if r is odd or
         if r & 1 == 1 or (a_pow_r_o_2 + 1) % N == 0:
@@ -36,14 +35,14 @@ def factor(N: int) -> Tuple[int, int]:
 
 
 def find_period(a, N):
-    """ WIP: Quantum subroutine for shor's algorithm.
+    """WIP: Quantum subroutine for shor's algorithm.
     Finds the period of a function of the form:
     f(x) = a^x % N
 
     This uses the quantum fourier transform.
     """
 
-    circuit = QuantumCircuit()
+    circuit = Circuit()
 
     # circuit.add(Qubits(5))
     # circuit.add(QFT(0, 1, 2, 3))
@@ -57,8 +56,6 @@ def find_period(a, N):
     circuit.add(quantum_amod_15(a))
     circuit.add(QFT(3, 2, 1, 0))  # Inverse Quantum Fourier transform
 
-    from shor.providers.ShorSimulator import QSession
-    from shor.providers.ShorSimulator import QuantumSimulator
     job = circuit.run(1024)
     result = job.result
     plot_results(result)
@@ -108,7 +105,7 @@ def qft(qubits: List[int]) -> Circuit:
     qc = Circuit()
     for i in range(len(qubits)):
         for k in range(i):
-            qc.add(Rx(qubits[i], qubits[k], angle=math.pi/float(2**(i-k))))
+            qc.add(Rx(qubits[i], qubits[k], angle=math.pi / float(2 ** (i - k))))
         qc.add(H(qubits[i]))
     return qc
 
@@ -121,7 +118,7 @@ def gcd(a: int, b: int) -> int:
     >>> greatest_common_divisor(15, 25)
     5
     """
-    assert a > 0 and b > 0, 'Inputs should be positive integers'
+    assert a > 0 and b > 0, "Inputs should be positive integers"
 
     to_divide, remainder = max(a, b), min(a, b)  # initial divisor
     divisor = 1

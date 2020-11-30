@@ -2,14 +2,40 @@ import math
 
 import numpy as np
 
-from shor.gates import H, QFT
-from shor.gates import Hadamard, PauliX, CCNOT, SWAP, CRZ, CH, S, Sdg, T, Tdg, PauliY, PauliZ, ID, Cx, U1, U3, U2, Rx, \
-    Cz, Ry, Rz, Cr, CRk, CNOT, Init_x, Init_y, CY
-from shor.layers import Qbits
-from shor.layers import Qubits
+from shor.gates import (
+    CCNOT,
+    CH,
+    CNOT,
+    CRZ,
+    CY,
+    ID,
+    QFT,
+    SWAP,
+    U1,
+    U2,
+    U3,
+    Cr,
+    CRk,
+    Cx,
+    Cz,
+    H,
+    Hadamard,
+    Init_x,
+    Init_y,
+    PauliX,
+    PauliY,
+    PauliZ,
+    Rx,
+    Ry,
+    Rz,
+    S,
+    Sdg,
+    T,
+    Tdg,
+)
+from shor.layers import Qbits, Qubits
 from shor.operations import Measure
 from shor.quantum import Circuit
-from shor.utils.visual import plot_results
 
 
 def test_ch_integration():
@@ -21,10 +47,10 @@ def test_ch_integration():
 
     job = circuit.run(1024)
     result = job.result
-    assert result['11'] > 450
-    assert result['00'] == 0
-    assert result['10'] > 450
-    assert result['01'] == 0
+    assert result["11"] > 450
+    assert result["00"] == 0
+    assert result["10"] > 450
+    assert result["01"] == 0
 
 
 def test_crz_integration():
@@ -33,10 +59,10 @@ def test_crz_integration():
     circuit.add(CRZ(0, 1, angle=math.pi / 3))
     job = circuit.run(1024)
     result = job.result
-    assert result['11'] == 0
-    assert result['00'] == 1024
-    assert result['10'] == 0
-    assert result['01'] == 0
+    assert result["11"] == 0
+    assert result["00"] == 1024
+    assert result["10"] == 0
+    assert result["01"] == 0
 
 
 def test_dblpx_integration():
@@ -46,10 +72,10 @@ def test_dblpx_integration():
     circuit.add(PauliX(1))
     job = circuit.run(1024)
     result = job.result
-    assert result['11'] == 1024
-    assert result['00'] == 0
-    assert result['10'] == 0
-    assert result['01'] == 0
+    assert result["11"] == 1024
+    assert result["00"] == 0
+    assert result["10"] == 0
+    assert result["01"] == 0
 
 
 def test_swap_integration():  #
@@ -60,10 +86,10 @@ def test_swap_integration():  #
     circuit.add(Measure([0, 1]))
     job = circuit.run(1024)
     result = job.result
-    assert result['11'] == 0
-    assert result['00'] == 0
-    assert result['10'] == 0
-    assert result['01'] == 1024
+    assert result["11"] == 0
+    assert result["00"] == 0
+    assert result["10"] == 0
+    assert result["01"] == 1024
 
 
 def test_ccnot_integration():
@@ -76,14 +102,14 @@ def test_ccnot_integration():
     job = circuit.run(1024)
     result = job.result
 
-    assert result['000'] == 0
-    assert result['001'] == 0
-    assert result['010'] == 0
-    assert result['100'] == 0
-    assert result['110'] == 0
-    assert result['101'] == 0
-    assert result['011'] == 0
-    assert result['111'] == 1024
+    assert result["000"] == 0
+    assert result["001"] == 0
+    assert result["010"] == 0
+    assert result["100"] == 0
+    assert result["110"] == 0
+    assert result["101"] == 0
+    assert result["011"] == 0
+    assert result["111"] == 1024
 
 
 def test_s_integration():
@@ -93,8 +119,8 @@ def test_s_integration():
     circuit.add(Measure([0]))
     job = circuit.run(1024)
     result = job.result
-    assert result['0'] == 1024
-    assert result['1'] == 0
+    assert result["0"] == 1024
+    assert result["1"] == 0
 
 
 def test_sdg_integration():
@@ -105,8 +131,8 @@ def test_sdg_integration():
     circuit.add(Measure([0]))
     job = circuit.run(1024)
     result = job.result
-    assert result['1'] == 1024
-    assert result['0'] == 0
+    assert result["1"] == 1024
+    assert result["0"] == 0
 
 
 def test_t_integration():
@@ -116,8 +142,8 @@ def test_t_integration():
     circuit.add(Measure([0]))
     job = circuit.run(1024)
     result = job.result
-    assert result['0'] == 1024
-    assert result['1'] == 0
+    assert result["0"] == 1024
+    assert result["1"] == 0
 
 
 def test_tdg_integration():
@@ -128,8 +154,8 @@ def test_tdg_integration():
     circuit.add(Measure([0]))
     job = circuit.run(1024)
     result = job.result
-    assert result['1'] == 1024
-    assert result['0'] == 0
+    assert result["1"] == 1024
+    assert result["0"] == 0
 
 
 def test_paulix_integration():
@@ -140,8 +166,8 @@ def test_paulix_integration():
     job = circuit.run(1024)
     result = job.result
     # Accounting for random noise, results won't be exact
-    assert result['0'] == 0
-    assert result['1'] == 1024
+    assert result["0"] == 0
+    assert result["1"] == 1024
 
 
 def test_pauliy_integration():
@@ -152,8 +178,8 @@ def test_pauliy_integration():
     job = circuit.run(1024)
     result = job.result
     # Accounting for random noise, results won't be exact
-    assert result['0'] == 0
-    assert result['1'] == 1024
+    assert result["0"] == 0
+    assert result["1"] == 1024
 
 
 def test_pauliz_integration():
@@ -165,8 +191,8 @@ def test_pauliz_integration():
     job = circuit.run(1024)
     result = job.result
     # Accounting for random noise, results won't be exact
-    assert result['0'] > 450
-    assert result['1'] > 450
+    assert result["0"] > 450
+    assert result["1"] > 450
 
 
 def test_id_qubit():
@@ -177,8 +203,8 @@ def test_id_qubit():
     job = circuit.run(1024)
     result = job.result
     # Accounting for random noise, results won't be exact
-    assert result['1'] == 0
-    assert result['0'] == 1024
+    assert result["1"] == 0
+    assert result["0"] == 1024
 
 
 def test_u1_integration():
@@ -189,8 +215,8 @@ def test_u1_integration():
     circuit.add(Measure([0]))
     job = circuit.run(1024)
     result = job.result
-    assert result['0'] == 0
-    assert result['1'] == 1024
+    assert result["0"] == 0
+    assert result["1"] == 1024
 
 
 def test_cx_int():
@@ -208,15 +234,15 @@ def test_cx_int():
     result_1 = circuit_1.run(1024).result
     result_2 = circuit_2.run(1024).result
 
-    assert result_1['01'] == 0
-    assert result_1['10'] > 450
-    assert result_1['00'] > 450
-    assert result_1['11'] == 0
+    assert result_1["01"] == 0
+    assert result_1["10"] > 450
+    assert result_1["00"] > 450
+    assert result_1["11"] == 0
 
-    assert result_2['01'] == 0
-    assert result_2['10'] == 0
-    assert result_2['00'] > 450
-    assert result_2['11'] > 450
+    assert result_2["01"] == 0
+    assert result_2["10"] == 0
+    assert result_2["00"] > 450
+    assert result_2["11"] > 450
 
 
 def test_cz_int():
@@ -228,24 +254,24 @@ def test_cz_int():
     circuit.add(Measure([0, 1]))
     job = circuit.run(1000)
     result = job.result
-    assert result['00'] > 210
-    assert result['01'] > 210
-    assert result['10'] > 210
-    assert result['11'] > 210
+    assert result["00"] > 210
+    assert result["01"] > 210
+    assert result["10"] > 210
+    assert result["11"] > 210
 
 
 def test_cr_int():
     circuit = Circuit()
     circuit.add(Qubits(2))
-    circuit.add(Cr(0, 1, angle=np.pi/2))
+    circuit.add(Cr(0, 1, angle=np.pi / 2))
     circuit.add(Measure(0, 1))
 
     result = circuit.run(1000).result
 
-    assert result['00'] == 1000
-    assert result['01'] == 0
-    assert result['10'] == 0
-    assert result['11'] == 0
+    assert result["00"] == 1000
+    assert result["01"] == 0
+    assert result["10"] == 0
+    assert result["11"] == 0
 
 
 def test_crk_int():
@@ -256,10 +282,10 @@ def test_crk_int():
 
     result = circuit.run(1000).result
 
-    assert result['00'] == 1000
-    assert result['01'] == 0
-    assert result['10'] == 0
-    assert result['11'] == 0
+    assert result["00"] == 1000
+    assert result["01"] == 0
+    assert result["10"] == 0
+    assert result["11"] == 0
 
 
 def test_ry_int():
@@ -270,8 +296,8 @@ def test_ry_int():
     job = circuit.run(1000)
     result = job.result
 
-    assert result['0'] > 450
-    assert result['1'] > 450
+    assert result["0"] > 450
+    assert result["1"] > 450
 
 
 def test_rz_int():
@@ -282,8 +308,8 @@ def test_rz_int():
     job = circuit.run(1000)
     result = job.result
 
-    assert result['0'] == 1000
-    assert result['1'] == 0
+    assert result["0"] == 1000
+    assert result["1"] == 0
 
 
 def test_u3_int():
@@ -299,10 +325,10 @@ def test_u3_int():
     result_1 = circuit_1.run(1024).result
     result_2 = circuit_2.run(1024).result
 
-    assert result_1['0'] > 450
-    assert result_1['1'] > 450
-    assert result_2['0'] > 450
-    assert result_2['1'] > 450
+    assert result_1["0"] > 450
+    assert result_1["1"] > 450
+    assert result_2["0"] > 450
+    assert result_2["1"] > 450
 
 
 def test_u2_int():
@@ -312,8 +338,8 @@ def test_u2_int():
     circuit_1.add(Measure([0]))
     result_1 = circuit_1.run(1024).result
 
-    assert result_1['0'] > 450
-    assert result_1['1'] > 450
+    assert result_1["0"] > 450
+    assert result_1["1"] > 450
 
 
 def test_multi_gate_int():
@@ -322,29 +348,30 @@ def test_multi_gate_int():
     circuit_1.add(PauliX(0))
     circuit_1.add(CNOT(0, 1))
     circuit_1.add(CH(0, 1))
-    circuit_1.add(Measure(0,1))
+    circuit_1.add(Measure(0, 1))
 
     result_1 = circuit_1.run(1024).result
 
-    assert result_1['00'] == 0
-    assert result_1['11'] > 450
-    assert result_1['10'] > 450
-    assert result_1['01'] == 0
+    assert result_1["00"] == 0
+    assert result_1["11"] > 450
+    assert result_1["10"] > 450
+    assert result_1["01"] == 0
     # I don't know if im screwing something up here or if the index order is wrong
+
 
 def test_switch_input_int():
     circuit_1 = Circuit()
     circuit_1.add(Qubits(2))
     circuit_1.add(PauliX(0))
     circuit_1.add(CNOT(1, 0))
-    circuit_1.add(Measure(0,1))
+    circuit_1.add(Measure(0, 1))
 
     result_1 = circuit_1.run(1024).result
 
-    assert result_1['00'] == 0
-    assert result_1['11'] == 0
-    assert result_1['10'] == 1024
-    assert result_1['01'] == 0
+    assert result_1["00"] == 0
+    assert result_1["11"] == 0
+    assert result_1["10"] == 1024
+    assert result_1["01"] == 0
 
 
 def test_initx_int():
@@ -355,8 +382,8 @@ def test_initx_int():
 
     result_1 = circuit_1.run(1024).result
 
-    assert result_1['0'] > 450
-    assert result_1['1'] > 450
+    assert result_1["0"] > 450
+    assert result_1["1"] > 450
 
 
 def test_inity_int():
@@ -367,8 +394,8 @@ def test_inity_int():
 
     result_1 = circuit_1.run(1024).result
 
-    assert result_1['0'] > 450
-    assert result_1['1'] > 450
+    assert result_1["0"] > 450
+    assert result_1["1"] > 450
 
 
 def test_QFT():
@@ -415,21 +442,23 @@ def test_QFT():
     # Y = X.run(QuantumSimulator, times=100)
     job = X.run(1024)
     result = job.result
+    assert result
     # plot_results(result)
+
 
 def test_cy_int():
     circuit_1 = Circuit()
     circuit_1.add(Qubits(2))
     circuit_1.add(PauliX(0))
     circuit_1.add(CY(0, 1))
-    circuit_1.add(Measure(0,1))
+    circuit_1.add(Measure(0, 1))
 
     result_1 = circuit_1.run(1024).result
 
-    assert result_1['00'] == 0
-    assert result_1['11'] == 1024
-    assert result_1['10'] == 0
-    assert result_1['01'] == 0
+    assert result_1["00"] == 0
+    assert result_1["11"] == 1024
+    assert result_1["10"] == 0
+    assert result_1["01"] == 0
 
 
 def test_cz2_int():
@@ -437,11 +466,11 @@ def test_cz2_int():
     circuit_1.add(Qubits(2))
     circuit_1.add(PauliX(0))
     circuit_1.add(Cz(0, 1))
-    circuit_1.add(Measure(0,1))
+    circuit_1.add(Measure(0, 1))
 
     result_1 = circuit_1.run(1024).result
 
-    assert result_1['00'] == 0
-    assert result_1['11'] == 0
-    assert result_1['10'] == 1024
-    assert result_1['01'] == 0
+    assert result_1["00"] == 0
+    assert result_1["11"] == 0
+    assert result_1["10"] == 1024
+    assert result_1["01"] == 0

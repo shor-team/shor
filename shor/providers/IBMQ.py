@@ -1,14 +1,13 @@
 from typing import List
 
+from qiskit import Aer, QuantumCircuit, execute
+
 from shor.operations import _Operation
-from shor.providers.base import Provider, Job, Result
-
-from qiskit import execute, Aer, QuantumCircuit
-
+from shor.providers.base import Job, Provider, Result
 from shor.quantum import QC
 from shor.utils.qbits import int_from_bit_string
 
-DEFAULT_BACKEND = Aer.get_backend('qasm_simulator')
+DEFAULT_BACKEND = Aer.get_backend("qasm_simulator")
 
 
 class IBMQResult(Result):
@@ -21,7 +20,7 @@ class IBMQResult(Result):
 
     @property
     def sig_bits(self):
-        return len(self.ibmq_result.get_counts.keys().get(0, ''))
+        return len(self.ibmq_result.get_counts.keys().get(0, ""))
 
 
 class IBMQJob(Job):
@@ -38,9 +37,8 @@ class IBMQJob(Job):
 
 
 class IBMQProvider(Provider):
-
     def __init__(self, **config):
-        self.backend = config.get('backend', DEFAULT_BACKEND)
+        self.backend = config.get("backend", DEFAULT_BACKEND)
         # register(config['APItoken'], config['url'])
 
     @property
