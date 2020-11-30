@@ -3,7 +3,7 @@ from typing import List, Union
 import numpy as np
 
 from shor.gates import _Gate
-from shor.layers import _Layer, Qbits
+from shor.layers import Qbits, _Layer
 from shor.operations import Measure, _Operation
 
 
@@ -11,7 +11,7 @@ class QuantumCircuit(object):
     def __init__(self):
         self.layers: List[_Layer] = []
 
-    def add(self, layer_or_circuit: Union[_Layer, 'QuantumCircuit']):
+    def add(self, layer_or_circuit: Union[_Layer, "QuantumCircuit"]):
         if isinstance(layer_or_circuit, _Layer):
             self.layers.append(layer_or_circuit)
         elif isinstance(layer_or_circuit, QuantumCircuit):
@@ -45,9 +45,10 @@ class QuantumCircuit(object):
     def __add__(self, other):
         return self.add(other)
 
-    def run(self, num_shots: int,  provider: 'Provider' = None, **kwargs):
+    def run(self, num_shots: int, provider=None, **kwargs):
         if provider is None:
             from shor.providers.ShorSimulator import ShorSimulator
+
             provider = ShorSimulator()
 
         return provider.run(self, num_shots)

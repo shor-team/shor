@@ -1,15 +1,13 @@
-
 import matplotlib.pyplot as plt
 
 from shor.providers.base import Result
 from shor.quantum import Circuit
 
-
 # import pydot
 
 
-def plot_circuit(circuit: Circuit, to_file='model.png'):
-    """ Converts a Quantum Circuit into a diagram, and saves to a file
+def plot_circuit(circuit: Circuit, to_file="model.png"):
+    """Converts a Quantum Circuit into a diagram, and saves to a file
 
     Args:
         circuit: A quantum :func:`Circuit() <shor.quantum.Circuit>` object
@@ -23,7 +21,7 @@ def plot_circuit(circuit: Circuit, to_file='model.png'):
 
 
 def circuit_to_dot(circuit: Circuit):
-    """ Converts a Quantum Circuit into Dot format
+    """Converts a Quantum Circuit into Dot format
     See: pydot
 
     Args:

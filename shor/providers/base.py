@@ -1,9 +1,9 @@
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 from enum import Enum
 from typing import List
 
-from shor.utils.qbits import int_from_bit_string, int_to_bit_string
 from shor.quantum import QuantumCircuit
+from shor.utils.qbits import int_from_bit_string, int_to_bit_string
 
 
 class Result(ABC):
@@ -33,14 +33,14 @@ class Result(ABC):
 
 
 class JobStatusCode(Enum):
-    COMPLETED = 'completed',
-    ERROR = 'error',
-    RUNNING = 'running',
-    WAITING = 'waiting'
+    COMPLETED = ("completed",)
+    ERROR = ("error",)
+    RUNNING = ("running",)
+    WAITING = "waiting"
 
 
 class JobStatus(object):
-    def __init__(self, code: JobStatusCode, message: str = '', api_error_code: int = None):
+    def __init__(self, code: JobStatusCode, message: str = "", api_error_code: int = None):
         self.code = code
         self.message = message
         self.api_error_code = api_error_code

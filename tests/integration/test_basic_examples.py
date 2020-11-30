@@ -26,10 +26,10 @@ def test_entanglement():
     circuit.add(Measure([0, 1]))
     job = circuit.run(1024)
     result = job.result
-    assert result['01'] == 0
-    assert result['10'] == 0
-    assert result['00'] > 450
-    assert result['11'] > 450
+    assert result["01"] == 0
+    assert result["10"] == 0
+    assert result["00"] > 450
+    assert result["11"] > 450
 
 
 def test_unitary_symmetry_does_nothing():
@@ -66,10 +66,10 @@ def test_multi_entangle():
     circuit.add(Measure([0, 1, 2, 3]))
     job = circuit.run(1024)
     result = job.result
-    assert result['0001'] == 0
-    assert result['1000'] == 0
-    assert result['0000'] > 450
-    assert result['1111'] > 450
+    assert result["0001"] == 0
+    assert result["1000"] == 0
+    assert result["0000"] > 450
+    assert result["1111"] > 450
 
 
 def test_multi_hadamard():
@@ -98,12 +98,12 @@ def test_teleportation():
     result = circuit.run(1024).result
 
     # All 16 states should be relatively equal probability
-    if result['11'] == 1024:
+    if result["11"] == 1024:
         circuit.add(PauliX(2))
         circuit.add(PauliZ(2))
-    elif result['10'] == 1024:
+    elif result["10"] == 1024:
         circuit.add(PauliZ(2))
-    elif result['01'] == 1024:
+    elif result["01"] == 1024:
         circuit.add(PauliX(2))
     circuit.add(Measure(2))
 

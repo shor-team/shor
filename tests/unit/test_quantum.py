@@ -1,7 +1,7 @@
 import pytest
 
-from shor.quantum import Circuit
 from shor.layers import _Layer
+from shor.quantum import Circuit
 
 
 def test_circuit_init():
@@ -40,5 +40,5 @@ def test_circuit_add_wrong_type():
         def __init__(self):
             pass
 
-    with pytest.raises(TypeError) as type_error:
-        circuit = Circuit().add(SomeClass())
+    with pytest.raises(TypeError):
+        Circuit().add(SomeClass())

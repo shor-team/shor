@@ -1,4 +1,4 @@
-from shor.gates import H, CNOT
+from shor.gates import CNOT, H
 from shor.layers import Qbits
 from shor.operations import Measure
 from shor.providers import IBMQProvider
