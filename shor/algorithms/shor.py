@@ -5,7 +5,6 @@ from typing import List, Tuple
 from shor.gates import CNOT, CSWAP, QFT, H, Rx, X
 from shor.layers import Qubits
 from shor.quantum import Circuit
-from shor.utils.visual import plot_results
 
 
 def factor(N: int) -> Tuple[int, int]:
@@ -21,17 +20,15 @@ def factor(N: int) -> Tuple[int, int]:
             # Lucky guess
             return common_divisor, N / common_divisor
 
-        # r = shor.quantum.shor.period(a, N)
         r = find_period(a, N)
 
-        a_pow_r_o_2 = a ^ (r / 2)  # broken here, TypeError: unsupported operand type(s) for /: 'QResult' and 'int'
+        a_pow_r_o_2 = a ^ r // 2
 
-        # if r is odd or
         if r & 1 == 1 or (a_pow_r_o_2 + 1) % N == 0:
             continue
 
         factor = max(gcd(a_pow_r_o_2 + 1, N), gcd(a_pow_r_o_2 - 1, N))
-        return factor, N / factor
+        return factor, N // factor
 
 
 def find_period(a, N):
@@ -58,9 +55,16 @@ def find_period(a, N):
 
     job = circuit.run(1024)
     result = job.result
-    plot_results(result)
 
-    return result
+    # TODO: This is still broken, likely due to differences between Qiskit and our library
+    # See: https://github.com/shor-team/shor/issues/39
+    # from shor.utils.visual import plot_results
+    # plot_results(result)
+
+    most_common = result.counts.most_common()
+    if len(most_common) > 1:
+        return gcd(most_common[0][0], most_common[1][0])
+    return 1
 
 
 def quantum_amod_15(a: int) -> Circuit:

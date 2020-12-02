@@ -506,7 +506,7 @@ class Init_y(_Gate):
         super().__init__(*qubits, **kwargs)
 
     def to_matrix(self) -> np.ndarray:
-        return self.S.to_matrix(self.H.to_matrix())
+        return self.S.to_matrix().dot(self.H.to_matrix())
 
 
 class Cr(_Gate):

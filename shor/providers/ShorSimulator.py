@@ -12,7 +12,7 @@ from shor.utils.qbits import change_qubit_order, get_entangled_initial_state, ha
 
 
 class _GateTuple(NamedTuple):
-    qubits: List[int]
+    qubits: Tuple[int]
     matrix: np.ndarray
     order: int
 
@@ -71,7 +71,7 @@ class ShorSimulator(Provider):
                 if can_combine_no_tensor:
                     combined.append(
                         _GateTuple(
-                            left_gate.qubits,
+                            tuple(left_gate.qubits),
                             change_qubit_order(right_gate.matrix, right_gate.qubits, left_gate.qubits).dot(
                                 left_gate.matrix
                             ),
@@ -81,7 +81,7 @@ class ShorSimulator(Provider):
                 elif can_combine_with_tensor:
                     combined.append(
                         _GateTuple(
-                            left_gate.qubits + right_gate.qubits,
+                            tuple(left_gate.qubits) + tuple(right_gate.qubits),
                             np.kron(left_gate.matrix, right_gate.matrix),
                             right_gate.order,
                         )

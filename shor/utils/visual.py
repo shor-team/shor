@@ -31,7 +31,6 @@ def circuit_to_dot(circuit: Circuit):
 
 
 def plot_results(result: Result):
-    plt.bar(list(result.counts.keys()), result.counts)
+    plt.bar(list(result.counts.keys()), result.counts.values())
     plt.xticks([i for i in range(0, 2 ** result.sig_bits, 5)])
     plt.show()
-    plt.get()
