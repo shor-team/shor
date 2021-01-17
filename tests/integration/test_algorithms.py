@@ -1,14 +1,19 @@
 import random
 
+import pytest
+
 from shor.algorithms.shor import factor, quantum_amod_15
+from shor.gates import CNOT, H
 from shor.layers import Qbits
 from shor.operations import Measure
-from shor.quantum import Circuit
+from shor.providers import IBMQProvider
+from shor.quantum import Circuit, QuantumCircuit
 
 # Seed for tests
 random.seed(0)
 
 
+@pytest.mark.xfail(reason="Not implemented correctly")
 def test_shor_factoring():
     N = 3 * 5
 
@@ -32,6 +37,24 @@ def test_modulus_circuit():
     circuit.add(Measure([0, 1]))
 
     job = circuit.run(1024)
+    result = job.result
+
+    print(result)
+
+
+def test_simons():
+    qbits = Qbits(6)
+
+    # Q = QuantumCircuit(qbits)  # Doesn't work, not implemented
+    Q = QuantumCircuit().add(qbits)
+    Q.add(H(0)).add(H(1)).add(H(2))
+    Q.add(CNOT(0, 3)).add(CNOT(1, 4)).add(CNOT(2, 5))
+    Q.add(CNOT(1, 4)).add(CNOT(1, 5))
+    Q.add(H(0)).add(H(1)).add(H(2))
+    Q.add(Measure(qbits[:3]))  # Doesn't work, partial measurements...
+
+    ibm_provider = IBMQProvider()
+    job = Q.run(1000, provider=ibm_provider)
     result = job.result
 
     print(result)
