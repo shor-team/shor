@@ -22,6 +22,12 @@ class QuantumCircuit(object):
 
         return self
 
+    def draw(self):
+        # Use the qiskit drawing function, may want to replace in future.
+        from shor.providers.IBMQ import to_qiskit_circuit
+
+        return to_qiskit_circuit(self).draw()
+
     def initial_state(self) -> np.ndarray:
         initial_qubits = []
         for qbit_layer in filter(lambda layer: type(layer) == Qbits, self.layers):

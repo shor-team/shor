@@ -47,21 +47,21 @@ class IBMQProvider(Provider):
         return list(map(lambda j: IBMQJob(j), self.backend.get_jobs()))
 
     def run(self, circuit: QC, times: int) -> IBMQJob:
-        job = execute(self._to_qiskit_circuit(circuit), self.backend, shots=times)
+        job = execute(to_qiskit_circuit(circuit), self.backend, shots=times)
 
         return IBMQJob(job)
 
-    @staticmethod
-    def _to_qiskit_circuit(quantum_circuit: QC) -> QuantumCircuit:
-        qiskit_circuit = QuantumCircuit(
-            len(quantum_circuit.initial_state()),
-            len(quantum_circuit.measure_bits()),
-        )
 
-        for gate_or_op in quantum_circuit.to_gates(include_operations=True):
-            transpile_gate(qiskit_circuit, gate_or_op)
+def to_qiskit_circuit(shor_circuit: QC) -> QuantumCircuit:
+    qiskit_circuit = QuantumCircuit(
+        len(shor_circuit.initial_state()),
+        len(shor_circuit.measure_bits()),
+    )
 
-        return qiskit_circuit
+    for gate_or_op in shor_circuit.to_gates(include_operations=True):
+        transpile_gate(qiskit_circuit, gate_or_op)
+
+    return qiskit_circuit
 
 
 def ibmq_symbol(shor_gate):
