@@ -454,11 +454,11 @@ class Rz(_Gate):
 class U3(_Gate):
     symbol = "U3"
 
-    def __init__(self, *qubits, theta=0, phi=0, alpha=0, **kwargs):
+    def __init__(self, *qubits, theta=0, phi=0, lam=0, **kwargs):
         kwargs["dimension"] = 1
         self.theta = theta
         self.phi = phi
-        self.alpha = alpha
+        self.lam = lam
 
         if not qubits:
             qubits = [0]
@@ -468,24 +468,21 @@ class U3(_Gate):
     def to_matrix(self) -> np.ndarray:
         return np.array(
             [
-                [math.cos(self.theta / 2), -np.exp(1j * self.alpha) * math.sin(self.theta / 2)],
+                [math.cos(self.theta / 2), -np.exp(1j * self.lam) * math.sin(self.theta / 2)],
                 [
                     np.exp(1j * self.phi) * math.sin(self.theta / 2),
-                    np.exp(1j * (self.phi + self.alpha)) * math.cos(self.theta / 2),
+                    np.exp(1j * (self.phi + self.lam)) * math.cos(self.theta / 2),
                 ],
             ]
         )
 
 
-class U2(_Gate):
+class U2(U3):
     symbol = "U2"
 
-    def __init__(self, *qubits, **kwargs):
-        self.U3 = U3(0, theta=np.pi / 2, **kwargs)
-        super().__init__(*qubits, **kwargs)
-
-    def to_matrix(self) -> np.ndarray:
-        return self.U3.to_matrix()
+    def __init__(self, *qubits, phi=0, lam=0, **kwargs):
+        super().__init__(*qubits, theta=np.pi / 2, phi=phi, lam=lam, **kwargs)
+        self.symbol = "u2"
 
 
 class Init_x(_Gate):

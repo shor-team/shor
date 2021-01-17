@@ -53,7 +53,7 @@ def test_unitary_symmetry_does_nothing():
     result_2 = symmetric_circuit_2.run(1024).result
 
     assert result_1.counts.get(0) == 1024
-    assert result_2.counts.get(3) == 1024
+    assert result_2.counts.get(0) == 1024
 
 
 def test_multi_entangle():

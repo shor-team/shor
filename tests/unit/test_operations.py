@@ -1,4 +1,9 @@
-def test_measure_init():
-    from shor.operations import Measure
+from shor.operations import Measure
 
-    Measure()
+
+class TestMeasurement:
+    def test_init(self):
+        Measure()
+
+    def test_measure_all(self):
+        Measure()

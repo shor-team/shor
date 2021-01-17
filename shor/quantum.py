@@ -2,6 +2,7 @@ from typing import List, Union
 
 import numpy as np
 
+from shor.errors import CircuitError
 from shor.gates import _Gate
 from shor.layers import Qbits, _Layer
 from shor.operations import Measure, _Operation
@@ -40,6 +41,10 @@ class QuantumCircuit(object):
         measure_bits = []
         for m in filter(lambda l: type(l) == Measure, self.layers):
             measure_bits.extend(m.qbits)
+
+        if not measure_bits:
+            raise CircuitError("No measurement found. Valid quantum circuits must contain a 'Measurement' operation")
+
         return measure_bits
 
     def __add__(self, other):
@@ -47,9 +52,9 @@ class QuantumCircuit(object):
 
     def run(self, num_shots: int, provider=None, **kwargs):
         if provider is None:
-            from shor.providers.ShorSimulator import ShorSimulator
+            from shor.providers.IBMQ import IBMQProvider
 
-            provider = ShorSimulator()
+            provider = IBMQProvider()
 
         return provider.run(self, num_shots)
 

@@ -331,9 +331,9 @@ def test_u3_matrix():
 
     theta = np.pi / 2
     phi = -np.pi / 3
-    alpha = np.pi / 2
+    lam = np.pi / 2
 
-    g = U3(0, theta=np.pi / 2, phi=-np.pi / 3, alpha=np.pi / 2)
+    g = U3(0, theta=np.pi / 2, phi=-np.pi / 3, lam=np.pi / 2)
 
     assert is_square(g.to_matrix())
     assert is_unitary(g.to_matrix())
@@ -341,8 +341,8 @@ def test_u3_matrix():
         g.to_matrix(),
         np.array(
             [
-                [np.cos(theta / 2), -np.exp(1j * alpha) * math.sin(theta / 2)],
-                [np.exp(1j * phi) * math.sin(theta / 2), np.exp(1j * (phi + alpha)) * math.cos(theta / 2)],
+                [np.cos(theta / 2), -np.exp(1j * lam) * math.sin(theta / 2)],
+                [np.exp(1j * phi) * math.sin(theta / 2), np.exp(1j * (phi + lam)) * math.cos(theta / 2)],
             ]
         ),
     )
@@ -352,10 +352,10 @@ def test_u2_matrix():
     from shor.gates import U2
 
     phi = -np.pi / 3
-    alpha = np.pi / 2
+    lam = np.pi / 2
     theta = np.pi / 2
 
-    g = U2(0, phi=-np.pi / 3, alpha=np.pi / 2)
+    g = U2(0, phi=-np.pi / 3, lam=np.pi / 2)
 
     assert is_square(g.to_matrix())
     assert is_unitary(g.to_matrix())
@@ -363,14 +363,14 @@ def test_u2_matrix():
         g.to_matrix(),
         np.array(
             [
-                [np.cos(theta / 2), -np.exp(1j * alpha) * math.sin(theta / 2)],
-                [np.exp(1j * phi) * math.sin(theta / 2), np.exp(1j * (phi + alpha)) * math.cos(theta / 2)],
+                [np.cos(theta / 2), -np.exp(1j * lam) * math.sin(theta / 2)],
+                [np.exp(1j * phi) * math.sin(theta / 2), np.exp(1j * (phi + lam)) * math.cos(theta / 2)],
             ]
         ),
     )
     assert np.allclose(
         g.to_matrix(),
-        (1 / np.sqrt(2)) * np.array([[1, -np.exp(1j * alpha)], [np.exp(1j * phi), np.exp(1j * (phi + alpha))]]),
+        (1 / np.sqrt(2)) * np.array([[1, -np.exp(1j * lam)], [np.exp(1j * phi), np.exp(1j * (phi + lam))]]),
     )
 
 

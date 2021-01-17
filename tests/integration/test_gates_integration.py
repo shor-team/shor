@@ -1,6 +1,7 @@
 import math
 
 import numpy as np
+import pytest
 
 from shor.gates import (
     CCNOT,
@@ -44,19 +45,21 @@ def test_ch_integration():
     circuit.add(PauliX(0))
     circuit.add(PauliX(1))
     circuit.add(CH(0, 1))
+    circuit.add(Measure(0, 1))
 
     job = circuit.run(1024)
     result = job.result
     assert result["11"] > 450
     assert result["00"] == 0
-    assert result["10"] > 450
-    assert result["01"] == 0
+    assert result["10"] == 0
+    assert result["01"] > 450
 
 
 def test_crz_integration():
     circuit = Circuit()
     circuit.add(Qubits(2))
     circuit.add(CRZ(0, 1, angle=math.pi / 3))
+    circuit.add(Measure(0, 1))
     job = circuit.run(1024)
     result = job.result
     assert result["11"] == 0
@@ -70,6 +73,7 @@ def test_dblpx_integration():
     circuit.add(Qubits(2))
     circuit.add(PauliX(0))
     circuit.add(PauliX(1))
+    circuit.add(Measure(0, 1))
     job = circuit.run(1024)
     result = job.result
     assert result["11"] == 1024
@@ -78,7 +82,7 @@ def test_dblpx_integration():
     assert result["01"] == 0
 
 
-def test_swap_integration():  #
+def test_swap_integration():
     circuit = Circuit()
     circuit.add(Qubits(2))
     circuit.add(PauliX(0))
@@ -88,8 +92,8 @@ def test_swap_integration():  #
     result = job.result
     assert result["11"] == 0
     assert result["00"] == 0
-    assert result["10"] == 0
-    assert result["01"] == 1024
+    assert result["01"] == 0
+    assert result["10"] == 1024
 
 
 def test_ccnot_integration():
@@ -235,14 +239,14 @@ def test_cx_int():
     result_2 = circuit_2.run(1024).result
 
     assert result_1["01"] == 0
-    assert result_1["10"] > 450
+    assert result_1["10"] == 0
     assert result_1["00"] > 450
-    assert result_1["11"] == 0
+    assert result_1["11"] > 450
 
     assert result_2["01"] == 0
-    assert result_2["10"] == 0
+    assert result_2["10"] > 450
     assert result_2["00"] > 450
-    assert result_2["11"] > 450
+    assert result_2["11"] == 0
 
 
 def test_cz_int():
@@ -274,6 +278,7 @@ def test_cr_int():
     assert result["11"] == 0
 
 
+@pytest.mark.xfail(reason="Not implemented by qiskit. Quantum-inspire does implement this")
 def test_crk_int():
     circuit = Circuit()
     circuit.add(Qubits(2))
@@ -315,7 +320,7 @@ def test_rz_int():
 def test_u3_int():
     circuit_1 = Circuit()
     circuit_1.add(Qubits(1))
-    circuit_1.add(U3(0, theta=np.pi / 2, phi=-np.pi / 2, alpha=np.pi / 2))
+    circuit_1.add(U3(0, theta=np.pi / 2, phi=-np.pi / 2, lam=np.pi / 2))
     circuit_1.add(Measure([0]))
 
     circuit_2 = Circuit()
@@ -354,8 +359,8 @@ def test_multi_gate_int():
 
     assert result_1["00"] == 0
     assert result_1["11"] > 450
-    assert result_1["10"] > 450
-    assert result_1["01"] == 0
+    assert result_1["01"] > 450
+    assert result_1["10"] == 0
     # I don't know if im screwing something up here or if the index order is wrong
 
 
@@ -370,10 +375,11 @@ def test_switch_input_int():
 
     assert result_1["00"] == 0
     assert result_1["11"] == 0
-    assert result_1["10"] == 1024
-    assert result_1["01"] == 0
+    assert result_1["01"] == 1024
+    assert result_1["10"] == 0
 
 
+@pytest.mark.xfail(reason="Not implemented by qiskit. Quantum-inspire does implement this")
 def test_initx_int():
     circuit_1 = Circuit()
     circuit_1.add(Qubits(1))
@@ -386,6 +392,7 @@ def test_initx_int():
     assert result_1["1"] > 450
 
 
+@pytest.mark.xfail(reason="Not implemented by qiskit. Quantum-inspire does implement this")
 def test_inity_int():
     circuit_1 = Circuit()
     circuit_1.add(Qubits(1))
@@ -398,6 +405,7 @@ def test_inity_int():
     assert result_1["1"] > 450
 
 
+@pytest.mark.xfail(reason="Not implemented by qiskit. Quantum-inspire does implement this")
 def test_QFT():
     qbits = Qbits(4)
     X = Circuit()
@@ -472,5 +480,5 @@ def test_cz2_int():
 
     assert result_1["00"] == 0
     assert result_1["11"] == 0
-    assert result_1["10"] == 1024
-    assert result_1["01"] == 0
+    assert result_1["01"] == 1024
+    assert result_1["10"] == 0

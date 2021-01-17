@@ -16,11 +16,12 @@ class IBMQResult(Result):
 
     @property
     def counts(self):
-        return {int_from_bit_string(k): v for k, v in self.ibmq_result.get_counts().items()}
+        return {int_from_bit_string(k.split(" ")[0]): v for k, v in self.ibmq_result.get_counts().items()}
 
     @property
     def sig_bits(self):
-        return len(self.ibmq_result.get_counts.keys().get(0, ""))
+        measurement_bases = list(self.ibmq_result.get_counts().keys())
+        return len(measurement_bases[0]) if measurement_bases else 0
 
 
 class IBMQJob(Job):
@@ -58,9 +59,38 @@ class IBMQProvider(Provider):
         )
 
         for gate_or_op in quantum_circuit.to_gates(include_operations=True):
-            if isinstance(gate_or_op, _Operation):
-                qiskit_circuit.__getattribute__(gate_or_op.symbol.lower())(gate_or_op.qbits, gate_or_op.bits)
-            else:
-                qiskit_circuit.__getattribute__(gate_or_op.symbol.lower())(*gate_or_op.qbits)
+            transpile_gate(qiskit_circuit, gate_or_op)
 
         return qiskit_circuit
+
+
+def ibmq_symbol(shor_gate):
+    return shor_gate.symbol.lower()
+
+
+def transpile_gate(qiskit_circuit, shor_gate):
+    symbol = ibmq_symbol(shor_gate)
+
+    if isinstance(shor_gate, _Operation):
+        if symbol == "measure":
+            if len(shor_gate.qbits) == len(shor_gate.bits) == qiskit_circuit.size():
+                qiskit_circuit.measure_active()
+            else:
+                for qbit, bit in zip(shor_gate.qbits, shor_gate.bits):
+                    qiskit_circuit.measure(qbit, bit)
+
+        return
+
+    args = []
+    kwargs = {}
+
+    if symbol in ["crx", "cry", "crz", "cu1", "rx", "ry", "rz", "u1"]:
+        args.append(shor_gate.angle)
+    if symbol == "u3":
+        args.append(shor_gate.theta)
+    if symbol in ["u2", "u3"]:
+        args.append(shor_gate.phi)
+        args.append(shor_gate.lam)
+
+    args.extend(shor_gate.qbits)
+    qiskit_circuit.__getattribute__(symbol)(*args, **kwargs)
