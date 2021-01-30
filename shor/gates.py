@@ -3,6 +3,7 @@ from typing import Iterable, Union
 
 import numpy as np
 
+from shor.errors import CircuitError
 from shor.layers import _Layer
 from shor.utils.collections import flatten
 
@@ -26,14 +27,24 @@ class _Gate(_Layer):
         self.qbits = flatten(qbits) if qbits else [0]
         self.dimension = kwargs.get("dimension", 1)
 
-        assert all(map(lambda q: type(q) == int, self.qbits))
-        assert len(self.qbits) == self.dimension
+        assert all(map(lambda q: type(q) == int, self.qbits)), str(self.qbits)
+        try:
+            assert len(self.qbits) % self.dimension == 0
+        except AssertionError:
+            raise CircuitError(
+                f"The input qbits length {len(self.qbits)} is not divisible by the '{self.symbol}' "
+                f"gate's dimension {self.dimension}"
+            )
 
     @property
     def qubits(self):
         return self.qbits
 
     def to_gates(self):
+        if len(self.qbits) > self.dimension:
+            return [
+                self.__class__(self.qbits[i : i + self.dimension]) for i in range(0, len(self.qbits), self.dimension)
+            ]
         return [self]
 
     @property

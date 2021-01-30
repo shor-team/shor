@@ -482,3 +482,34 @@ def test_cz2_int():
     assert result_1["11"] == 0
     assert result_1["01"] == 1024
     assert result_1["10"] == 0
+
+def test_mult_gate_inputs1():
+    circuit_1 = Circuit()
+    circuit_1.add(Qubits(2))
+    circuit_1.add(H([0, 1]))
+    circuit_1.add(Measure(0, 1))
+
+    result_1 = circuit_1.run(1024).result
+
+    assert result_1["00"] > 215
+    assert result_1["11"] > 215
+    assert result_1["10"] > 215
+    assert result_1["01"] > 215
+
+
+def test_quantum_multi_hadamard_partial_measure():
+    circuit_1 = Circuit()
+    circuit_1.add(Qubits(4))
+    circuit_1.add(H(range(4)))
+    circuit_1.add(Measure(0, 1))
+
+    result_1 = circuit_1.run(1024).result
+
+    print(result_1.counts)
+
+    assert all(r > 215 for r in [result_1["0000"], result_1["0001"], result_1["0010"], result_1["0011"]])
+
+    # Ony measuring the 2 right-most qbits. Shouldn't see measurements for other qbits.
+    assert result_1["1000"] == result_1["1001"] == result_1["1010"] == result_1["1011"] == 0
+    assert result_1["1100"] == result_1["1101"] == result_1["1110"] == result_1["1111"] == 0
+    assert result_1["0100"] == result_1["0101"] == result_1["0110"] == result_1["0111"] == 0
